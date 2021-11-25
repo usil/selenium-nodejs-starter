@@ -1,0 +1,27 @@
+[
+  {
+    "url": "https://www.usil.edu.pe/?verified=true",
+    "searchParams": "USIL",
+    "checkItLoads": true
+  },
+  {
+    "url": "https://coloringdreams.com/",
+    "searchParams": "coloring dreams",
+    "checkItLoads": true
+  },
+  {
+    "url": "https://www.sir.edu.pe/",
+    "searchParams": "san ignacio de recalde",
+    "checkItLoads": true
+  },
+  {
+    "url": "https://examen.institutoemprendedores.pe/",
+    "searchParams": "instituto de emprendedores",
+    "checkItLoads": true
+  },
+  {
+    "url": "https://epg.usil.edu.pe/",
+    "searchParams": "escuela post grado usil",
+    "checkItLoads": true
+  }
+]

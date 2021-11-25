@@ -1,0 +1,24 @@
+{
+  "name": "selenium-nodejs-starter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/usil/selenium-nodejs-starter.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/usil/selenium-nodejs-starter/issues"
+  },
+  "homepage": "https://github.com/usil/selenium-nodejs-starter#readme",
+  "dependencies": {
+    "chromedriver": "^96.0.0",
+    "colors": "^1.4.0",
+    "selenium-webdriver": "^4.1.0"
+  }
+}
