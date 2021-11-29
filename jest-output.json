@@ -1,1 +1,64 @@
-{"numFailedTestSuites":0,"numFailedTests":0,"numPassedTestSuites":1,"numPassedTests":2,"numPendingTestSuites":0,"numPendingTests":0,"numRuntimeErrorTestSuites":0,"numTodoTests":0,"numTotalTestSuites":1,"numTotalTests":2,"openHandles":[],"snapshot":{"added":0,"didUpdate":false,"failure":false,"filesAdded":0,"filesRemoved":0,"filesRemovedList":[],"filesUnmatched":0,"filesUpdated":0,"matched":0,"total":0,"unchecked":0,"uncheckedKeysByFile":[],"unmatched":0,"updated":0},"startTime":1638208348025,"success":true,"testResults":[{"assertionResults":[{"ancestorTitles":["Link https://www.usil.edu.pe/?verified=true appears on the first 4 positions in the google search"],"failureMessages":[],"fullName":"Link https://www.usil.edu.pe/?verified=true appears on the first 4 positions in the google search Link for the USIL appears in the first 4 positions","location":null,"status":"passed","title":"Link for the USIL appears in the first 4 positions"},{"ancestorTitles":["Link https://www.usil.edu.pe/?verified=true appears on the first 4 positions in the google search"],"failureMessages":[],"fullName":"Link https://www.usil.edu.pe/?verified=true appears on the first 4 positions in the google search Link for the coloring dreams appears in the first 4 positions","location":null,"status":"passed","title":"Link for the coloring dreams appears in the first 4 positions"}],"endTime":1638208361202,"message":"","name":"C:\\usil-2\\forls\\selenium-nodejs-starter\\usil\\marketing\\google-seo\\shouldAppearFirstFour\\shouldAppearFirstFour.test.js","startTime":1638208348214,"status":"passed","summary":""}],"wasInterrupted":false}
+{
+  "numFailedTestSuites": 0,
+  "numFailedTests": 0,
+  "numPassedTestSuites": 1,
+  "numPassedTests": 2,
+  "numPendingTestSuites": 0,
+  "numPendingTests": 0,
+  "numRuntimeErrorTestSuites": 0,
+  "numTodoTests": 0,
+  "numTotalTestSuites": 1,
+  "numTotalTests": 2,
+  "openHandles": [],
+  "snapshot": {
+    "added": 0,
+    "didUpdate": false,
+    "failure": false,
+    "filesAdded": 0,
+    "filesRemoved": 0,
+    "filesRemovedList": [],
+    "filesUnmatched": 0,
+    "filesUpdated": 0,
+    "matched": 0,
+    "total": 0,
+    "unchecked": 0,
+    "uncheckedKeysByFile": [],
+    "unmatched": 0,
+    "updated": 0
+  },
+  "startTime": 1638217562855,
+  "success": true,
+  "testResults": [
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "Link https://www.usil.edu.pe/?verified=true appears on the first 4 positions in the google search"
+          ],
+          "failureMessages": [],
+          "fullName": "Link https://www.usil.edu.pe/?verified=true appears on the first 4 positions in the google search Link for the USIL appears in the first 4 positions",
+          "location": null,
+          "status": "passed",
+          "title": "Link for the USIL appears in the first 4 positions"
+        },
+        {
+          "ancestorTitles": [
+            "Link https://www.usil.edu.pe/?verified=true appears on the first 4 positions in the google search"
+          ],
+          "failureMessages": [],
+          "fullName": "Link https://www.usil.edu.pe/?verified=true appears on the first 4 positions in the google search Link for the coloring dreams appears in the first 4 positions",
+          "location": null,
+          "status": "passed",
+          "title": "Link for the coloring dreams appears in the first 4 positions"
+        }
+      ],
+      "endTime": 1638217573776,
+      "message": "",
+      "name": "C:\\usil-2\\forls\\selenium-nodejs-starter\\usil\\marketing\\google-seo\\shouldAppearFirstFour\\shouldAppearFirstFour.test.js",
+      "startTime": 1638217562982,
+      "status": "passed",
+      "summary": ""
+    }
+  ],
+  "wasInterrupted": false
+}

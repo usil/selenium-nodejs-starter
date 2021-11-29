@@ -1,5 +1,6 @@
 const jestOutput = require("./jest-output.json");
 const Table = require("cli-table");
+const os = require("os");
 require("colors");
 
 const table = new Table({
@@ -7,7 +8,7 @@ const table = new Table({
     "#".blue,
     "Business Unit".blue,
     "Department".blue,
-    "Web".blue,
+    "Feature".blue,
     "Scenario".blue,
     "Passed".blue,
   ],
@@ -18,8 +19,10 @@ const table = new Table({
 let index = 0;
 
 for (const testResult of jestOutput.testResults) {
-  const path = testResult.name.split("\\");
-
+  const path =
+    os.type() === "Windows_NT"
+      ? testResult.name.split("\\")
+      : testResult.name.split("/");
   table.push([
     (index + 1).toString(),
     path[path.length - 5],
@@ -30,6 +33,7 @@ for (const testResult of jestOutput.testResults) {
       ? testResult.status.green
       : testResult.status.red,
   ]);
+  index++;
 }
 
 console.log(table.toString());

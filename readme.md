@@ -6,15 +6,28 @@ This library combines selenium with jest asserts to create a report.
 
 - nodejs > 14
 
+## Chromedriver
+
+This library uses the `chromedriver` package, by default it will use the latest chromedriver. Use `npm install chromedriver --detect_chromedriver_version` if you want to detect and install the version of chrome that you have. For more info take a look at [chromedriver](https://www.npmjs.com/package/).
+
 ## USAGE
 
-You should follow a very strict folder following `business unit/department/ acme-web/feature1/scenario1/scenario1.js` in the example this translates as `usil/marketing/google-seo/shouldAppearFirstFour/shouldAppearFirstFour.test.js`.
+You should follow a very strict folder structure:
+
+    .
+    ├── ...
+    ├── business unit                 # In the example USIL
+    │   ├── department                # In the example marketing
+    |       ├── feature               # In the example google-seo
+    |           ├── scenario1         # In the example shouldAppearFirstFour
+    |               ├── scenario1.js  # In the example shouldAppearFirstFour.test.js
+    └── ...
 
 Then just create your tests using traditional jest and selenium. After that run `npm start`.
 
-This is an example of the input value that will be shown in the console.
+This is an example of the report that will be shown in the console.
 
-<a href="https://ibb.co/s26cHtk"><img src="https://i.ibb.co/6m1GBNV/test.jpg" alt="test" border="0"></a><br /><a target='_blank' href='https://es.imgbb.com/'>logos fotografia png</a><br />
+![Result Example](https://i.ibb.co/6m1GBNV/test.jpg)
 
 ## Contributors
 
