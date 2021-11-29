@@ -1,12 +1,16 @@
 # SELENIUM NODEJS STARTER v1.0.0
 
+This library combines selenium with jest asserts to create a report.
+
 ## REQUIREMENTS
 
 - nodejs > 14
 
-## How To Use
+## USAGE
 
-Modify the `linksToTest.json` with the links and search params that you want to test. You can also specify if you want to check that the page loads passing `checkItLoads` as true.
+You should follow a very strict folder following `business unit/department/ acme-web/feature1/scenario1/scenario1.js` in the example this translates as `usil/marketing/google-seo/shouldAppearFirstFour/shouldAppearFirstFour.test.js`. This is an example of the input value that will be shown in the console.
+
+Then just create your tests using traditional jest and selenium. After that run `npm start`.
 
 ## Contributors
 
