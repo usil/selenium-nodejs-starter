@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node ."
+    "start": "jest --verbose --json --outputFile=jest-output.json && node .",
+    "test": "jest --verbose --json --outputFile=jest-output.json"
   },
   "repository": {
     "type": "git",
@@ -18,7 +19,16 @@
   "homepage": "https://github.com/usil/selenium-nodejs-starter#readme",
   "dependencies": {
     "chromedriver": "^96.0.0",
+    "cli-color": "^2.0.1",
+    "cli-table": "^0.3.9",
+    "clui": "^0.3.6",
     "colors": "^1.4.0",
     "selenium-webdriver": "^4.1.0"
+  },
+  "devDependencies": {
+    "browser-resolve": "^2.0.0",
+    "jest": "^27.4.0",
+    "jest-environment-webdriver": "^0.2.0",
+    "jest-html-reporter": "^3.4.1"
   }
 }
