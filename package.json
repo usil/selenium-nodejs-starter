@@ -2,10 +2,9 @@
   "name": "selenium-nodejs-starter",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./src/index.js",
   "scripts": {
-    "start": "jest --verbose --json --outputFile=jest-output.json && node .",
-    "test": "jest --verbose --json --outputFile=jest-output.json"
+    "start": "node ."
   },
   "repository": {
     "type": "git",
@@ -18,11 +17,15 @@
   },
   "homepage": "https://github.com/usil/selenium-nodejs-starter#readme",
   "dependencies": {
+    "advanced-settings": "git+https://github.com/usil/advanced-settings.git",
     "chromedriver": "^96.0.0",
     "cli-color": "^2.0.1",
     "cli-table": "^0.3.9",
     "clui": "^0.3.6",
     "colors": "^1.4.0",
+    "cross-env": "^7.0.3",
+    "dotenv": "^10.0.0",
+    "geckodriver": "^2.0.4",
     "selenium-webdriver": "^4.1.0"
   },
   "devDependencies": {

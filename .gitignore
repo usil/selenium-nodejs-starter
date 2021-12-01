@@ -1,1 +1,4 @@
 node_modules
+jest-output.json
+.env
+*-jest-output.json

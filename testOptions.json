@@ -1,0 +1,24 @@
+{
+  "files": [],
+  "virtualUserMultiplier": 1,
+  "virtualUserSuites": [
+    {
+      "skip": false,
+      "identifier": "first-test",
+      "files": [],
+      "variables": {
+        "url": "https://www.usil.edu.pe/?verified=true",
+        "searchText": "USIL"
+      }
+    },
+    {
+      "skip": false,
+      "identifier": "second-test",
+      "files": [],
+      "variables": {
+        "url": "https://coloringdreams.com/",
+        "searchText": "${SECRET_SEARCH}"
+      }
+    }
+  ]
+}

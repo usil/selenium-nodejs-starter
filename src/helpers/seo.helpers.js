@@ -1,15 +1,14 @@
 const { By, Key, until } = require("selenium-webdriver");
-require("chromedriver");
 
 const seoHelpers = {
   getSearchPosition: async (driver, findStringDreams, urlColoringDreams) => {
     try {
       const searchBox = driver.findElement(By.name("q"));
       await searchBox.sendKeys(findStringDreams, Key.RETURN);
-      await driver.wait(() => {
-        return until.elementLocated(By.id("rso"));
-      }, 3000);
-      const searchList = driver.findElement(By.id("rso"));
+      const searchList = await driver.wait(
+        until.elementLocated(By.id("rso")),
+        5 * 1000
+      );
       const linksContainers = await searchList.findElements(By.className("g"));
       const links = [];
       for (const linkContainer of linksContainers) {
