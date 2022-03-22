@@ -1,5 +1,5 @@
-const seoHelpers = require("../../../../src/helpers/seo.helpers");
-const getBrowserDriver = require("../../../../src/browsers/browserDriver");
+const seoHelpers = require("../../../../../src/helpers/seo.helpers");
+const getBrowserDriver = require("../../../../../src/browsers/browserDriver");
 
 const url = process.env.url;
 const findString = process.env.searchText;
