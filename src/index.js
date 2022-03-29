@@ -94,16 +94,6 @@ const createTable = (suiteIdentifier, stderr, virtualUser) => {
         : testResult.status.red
     );
 
-    // contentToPush = [
-    //   (testResultIndex + 1).toString(),
-    //   path[path.length - 5] || "null",
-    //   path[path.length - 4] || "null",
-    //   path[path.length - 3] || "null",
-    //   path[path.length - 2] || "null",
-    //   testResult.status === "passed"
-    //     ? testResult.status.green
-    //     : testResult.status.red,
-    // ];
     table.push([...contentToPush]);
     testResultIndex++;
   } //* Inserts data to the table
@@ -151,9 +141,11 @@ const main = () => {
             ? suiteTestFiles
             : globalTestFiles;
 
+        console.log(testFiles.join(" "));
+
         //* Spawns the jest process
         exec(
-          `npx jest --verbose --json --outputFile=${suiteIdentifier}-jest-output.json ${testFiles.join(
+          `npx jest --verbose --json --runInBand --outputFile=${suiteIdentifier}-jest-output.json ${testFiles.join(
             " "
           )}`,
           {
@@ -168,9 +160,9 @@ const main = () => {
           })
           .catch((err) => {
             if (!err.killed) {
-              console.info(result.stderr.blue); //* Print the jest result
+              console.info(err.stderr.red); //* Print the jest result
               if (testOptions.customColumns.length > 0) {
-                createTable(suiteIdentifier, result.stderr.blue, index);
+                createTable(suiteIdentifier, err.stderr.red, index);
               }
             } else {
               console.error("error".red, err);

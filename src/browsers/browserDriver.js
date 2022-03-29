@@ -11,8 +11,8 @@ const browserOptions = require("../../browserOptions.json");
 
 // * Required for headless
 const screenSize = {
-  width: 640,
-  height: 480,
+  width: 1080,
+  height: 1080,
 };
 
 const browserDriver = {
