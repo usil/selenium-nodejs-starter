@@ -1,6 +1,7 @@
 {
   "files": [],
   "virtualUserMultiplier": 1,
+  "customColumns": ["First", "Second", "Third", "Fourth"],
   "virtualUserSuites": [
     {
       "skip": false,

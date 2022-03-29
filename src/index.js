@@ -29,18 +29,23 @@ const createTable = (suiteIdentifier, stderr, virtualUser) => {
       .yellow.bold
   );
 
-  console.info(stderr); //* Print the jest result
+  const tableHead = [];
+  const colWidths = [];
+
+  tableHead.push("#".blue);
+  colWidths.push(5);
+
+  testOptions.customColumns.forEach((column) => {
+    tableHead.push(`${column}`.blue);
+    colWidths.push(30);
+  });
+
+  tableHead.push("Passed".blue);
+  colWidths.push(15);
 
   const table = new Table({
-    head: [
-      "#".blue,
-      "Business Unit".blue,
-      "Department".blue,
-      "Feature".blue,
-      "Scenario".blue,
-      "Passed".blue,
-    ],
-    colWidths: [5, 20, 20, 20, 40, 20],
+    head: [...tableHead],
+    colWidths: [...colWidths],
     colors: true,
   }); //* Creates the table
 
@@ -51,16 +56,45 @@ const createTable = (suiteIdentifier, stderr, virtualUser) => {
       os.type() === "Windows_NT"
         ? testResult.name.split("\\")
         : testResult.name.split("/");
-    table.push([
-      (testResultIndex + 1).toString(),
-      path[path.length - 5],
-      path[path.length - 4],
-      path[path.length - 3],
-      path[path.length - 2],
+
+    const testIndex = path.indexOf("tests");
+
+    if (testIndex === -1) {
+      console.log(
+        `${path[path.length - 1]} test is not inside the correct directory.`
+          .yellow
+      );
+      testResultIndex++;
+      continue;
+    }
+
+    const tableValues = path.slice(testIndex + 1, path.length - 1);
+
+    if (tableValues.length !== testOptions.customColumns.length) {
+      console.log(
+        `${path[path.length - 1]} does not meet your columns definition.`.yellow
+      );
+    }
+
+    const contentToPush = [];
+
+    contentToPush.push((testResultIndex + 1).toString());
+
+    for (let index = 0; index < testOptions.customColumns.length; index++) {
+      if (tableValues[index]) {
+        contentToPush.push(tableValues[index]);
+      } else {
+        contentToPush.push("null");
+      }
+    }
+
+    contentToPush.push(
       testResult.status === "passed"
         ? testResult.status.green
-        : testResult.status.red,
-    ]);
+        : testResult.status.red
+    );
+
+    table.push([...contentToPush]);
     testResultIndex++;
   } //* Inserts data to the table
 
@@ -107,9 +141,11 @@ const main = () => {
             ? suiteTestFiles
             : globalTestFiles;
 
+        console.log(testFiles.join(" "));
+
         //* Spawns the jest process
         exec(
-          `npx jest --verbose --json --outputFile=${suiteIdentifier}-jest-output.json ${testFiles.join(
+          `npx jest --verbose --json --runInBand --outputFile=${suiteIdentifier}-jest-output.json ${testFiles.join(
             " "
           )}`,
           {
@@ -117,11 +153,17 @@ const main = () => {
           }
         )
           .then((result) => {
-            createTable(suiteIdentifier, result.stderr.blue, index);
+            console.info(result.stderr.blue); //* Print the jest result
+            if (testOptions.customColumns.length > 0) {
+              createTable(suiteIdentifier, result.stderr.blue, index);
+            }
           })
           .catch((err) => {
             if (!err.killed) {
-              createTable(suiteIdentifier, err.stderr.red, index);
+              console.info(err.stderr.red); //* Print the jest result
+              if (testOptions.customColumns.length > 0) {
+                createTable(suiteIdentifier, err.stderr.red, index);
+              }
             } else {
               console.error("error".red, err);
             }
