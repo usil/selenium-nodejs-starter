@@ -40,7 +40,7 @@ const createTable = (suiteIdentifier, stderr, virtualUser) => {
     colWidths.push(30);
   });
 
-  tableHead.push("Passed".blue);
+  tableHead.push("Status".blue);
   colWidths.push(15);
 
   const table = new Table({
