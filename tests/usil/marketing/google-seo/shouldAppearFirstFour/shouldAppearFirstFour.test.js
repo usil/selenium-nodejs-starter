@@ -21,7 +21,7 @@ describe(`Link ${url} appears on the first 4 positions in the google search`, ()
       findString,
       url
     );
-    expect(linkIndex).toBeGreaterThan(-2);
+    expect(linkIndex).toBeGreaterThan(-1);
     expect(linkIndex).toBeLessThan(4);
   });
 

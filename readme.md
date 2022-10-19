@@ -15,9 +15,6 @@ This library combines selenium with jest asserts to create a report.
 - [Setting the test files](#json-example)
 - [Run the test](#run-the-test)
 
-## Running the eventhos system
-
-You can either use docker using the [eventhos repository](https://github.com/usil/eventhos) or run each component of eventhos system (database, api and web) separately on your own.
 
 ## Supported Browsers
 
@@ -160,7 +157,17 @@ In the `testOptions.json` file:
 }
 ```
 
-Then just create your tests using traditional jest and selenium. After that run `npm install` and `npm test`.
+Then just create your tests using traditional jest and selenium. After that run:
+```
+// install chromedriver with the detected version
+npm install chromedriver --detect_chromedriver_version
+
+// install dependencies
+npm install
+
+// Run test
+npm test
+```
 
 This is an example of the report that will be shown in the console.
 
