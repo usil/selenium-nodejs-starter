@@ -110,15 +110,10 @@ Example in `testOptions.json` file
 
 
 ```json
-
 {
-
   "files": [],
-
   "virtualUserMultiplier": 1,
-
   "customColumns": ["enterprise", "department", "feature", "scenario"],
-
   "virtualUserSuites": [
     {
       "skip": false,
