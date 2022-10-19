@@ -15,10 +15,6 @@ This library combines selenium with jest asserts to create a report.
 - [Setting the test files](#json-example)
 - [Run the test](#run-the-test)
 
-## Running the eventhos system
-
-You can either use docker using the [eventhos repository](https://github.com/usil/eventhos) or run each component of eventhos system (database, api and web) separately on your own.
-
 ## Supported Browsers
 
 The test library only supports chrome and firebox.
@@ -99,6 +95,38 @@ A `virtualUserSuite` object has the following properties:
     }
   ]
 }
+```
+
+## Environment
+
+
+
+In case sensitive data is required, it can be obtained directly from the environment variables
+
+
+
+Example in `testOptions.json` file
+
+
+
+```json
+{
+  "files": [],
+  "virtualUserMultiplier": 1,
+  "customColumns": ["enterprise", "department", "feature", "scenario"],
+  "virtualUserSuites": [
+    {
+      "skip": false,
+      "identifier": "first-test",
+      "files": [],
+      "variables": {
+        "endPoint": "https://www.usil.edu.pe/api/v1/student",
+        "apiKey": "${API_KEY}"
+      }
+    }
+  ]
+}
+
 ```
 
 ## Configurations: browserOptions.json
@@ -185,7 +213,18 @@ In the `testOptions.json` file:
 }
 ```
 
-Then just create your tests using traditional jest and selenium. After that run `npm install` and `npm test`.
+Then just create your tests using traditional jest and selenium. After that run:
+
+```
+# install chromedriver with the detected version
+npm install chromedriver --detect_chromedriver_version
+
+# install dependencies
+npm install
+
+# Run test
+npm test
+```
 
 This is an example of the report that will be shown in the console.
 
@@ -205,6 +244,12 @@ This is an example of the report that will be shown in the console.
       <img src="https://avatars0.githubusercontent.com/u/3322836?s=460&v=4" width="100px;"/>
       <br />
       <label><a href="http://jrichardsz.github.io/">JRichardsz</a></label>
+      <br />
+    </td>
+    <td>
+      <img src="https://avatars.githubusercontent.com/u/55628495?v=4" width="100px;"/>
+      <br />
+      <label><a href="https://aj-derteano.github.io/">AJ Derteano</a></label>
       <br />
     </td>
   </tbody>

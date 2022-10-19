@@ -111,6 +111,8 @@ const createTable = (suiteIdentifier, stderr, virtualUser) => {
  */
 const main = () => {
   let suiteIndex = 0;
+  const sysOS = os.type();
+
   for (
     let index = 0;
     index < (testOptions.virtualUserMultiplier || 1);
@@ -138,10 +140,17 @@ const main = () => {
           environmentTestFiles.length > 0
             ? environmentTestFiles
             : suiteTestFiles.length > 0
-            ? suiteTestFiles
-            : globalTestFiles;
+              ? suiteTestFiles
+              : globalTestFiles;
 
         console.log(testFiles.join(" "));
+
+        /**
+         * When not in windows, the path is added
+         */
+        if (sysOS !== 'Windows_NT') {
+          suite.variables.PATH = process.env.PATH
+        }
 
         //* Spawns the jest process
         exec(
