@@ -94,7 +94,7 @@ A `virtualUserSuite` object has the following properties:
       "files": [],
       "variables": {
         "url": "https://coloringdreams.com/",
-        "searchText": "${SECRET_SEARCH}"
+        "searchText": "coloring dreams"
       }
     }
   ]
@@ -110,6 +110,31 @@ You will have a `browserOptions.json` file in the root of this project. Where yo
 ```json
 {
   "arguments": ["--log-level=1", "--headless", "--no-sandbox", "--disable-gpu"]
+}
+```
+
+## Environment
+
+In case sensitive data is required, it can be obtained directly from the environment variables
+
+Example in `testOptions.json` file
+
+```json
+{
+  "files": [],
+  "virtualUserMultiplier": 1,
+  "customColumns": ["enterprise", "department", "feature", "scenario"],
+  "virtualUserSuites": [
+    {
+      "skip": false,
+      "identifier": "first-test",
+      "files": [],
+      "variables": {
+        "endPoint": "https://coloringdreams.com/api/v1/studens",
+        "apiKey": "${API_KEY}"
+      }
+    }
+  ]
 }
 ```
 
