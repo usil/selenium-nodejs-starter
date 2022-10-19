@@ -145,7 +145,10 @@ const main = () => {
 
         console.log(testFiles.join(" "));
 
-        if (sysOS === 'Linux' || sysOS !== 'Windows_NT') {
+        /**
+         * When not in windows, the path is added
+         */
+        if (sysOS !== 'Windows_NT') {
           suite.variables.PATH = process.env.PATH
         }
 
