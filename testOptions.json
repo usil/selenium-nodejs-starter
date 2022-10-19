@@ -8,7 +8,7 @@
       "identifier": "first-test",
       "files": [],
       "variables": {
-        "url": "https://www.usil.edu.pe/?verified=true",
+        "url": "https://usil.edu.pe/",
         "searchText": "USIL"
       }
     },
@@ -17,7 +17,7 @@
       "identifier": "second-test",
       "files": [],
       "variables": {
-        "url": "https://coloringdreams.com/",
+        "url": "https://www.coloringdreams.com/",
         "searchText": "${SECRET_SEARCH}"
       }
     }
