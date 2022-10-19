@@ -120,27 +120,16 @@ Example in `testOptions.json` file
   "customColumns": ["enterprise", "department", "feature", "scenario"],
 
   "virtualUserSuites": [
-
     {
-
       "skip": false,
-
       "identifier": "first-test",
-
       "files": [],
-
       "variables": {
-
         "endPoint": "https://www.usil.edu.pe/api/v1/student",
-
         "apiKey": "${API_KEY}"
-
       }
-
     }
-
   ]
-
 }
 
 ```
