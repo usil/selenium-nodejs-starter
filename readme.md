@@ -191,13 +191,13 @@ In the `testOptions.json` file:
 Then just create your tests using traditional jest and selenium. After that run:
 
 ```
-// install chromedriver with the detected version
+# install chromedriver with the detected version
 npm install chromedriver --detect_chromedriver_version
 
-// install dependencies
+# install dependencies
 npm install
 
-// Run test
+# Run test
 npm test
 ```
 
