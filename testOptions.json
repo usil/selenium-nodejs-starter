@@ -1,7 +1,13 @@
 {
   "files": [],
   "virtualUserMultiplier": 1,
-  "customColumns": ["enterprise", "department", "feature", "scenario"],
+  "reportMode": "staticDeep",
+  "columnNames": [
+    "enterprise",
+    "department",
+    "feature",
+    "scenario"
+  ],
   "virtualUserSuites": [
     {
       "skip": false,

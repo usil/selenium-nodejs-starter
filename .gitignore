@@ -2,3 +2,4 @@ node_modules
 jest-output.json
 .env
 *-jest-output.json
+package-lock.json

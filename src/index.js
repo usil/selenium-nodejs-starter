@@ -13,6 +13,8 @@ const exec = util.promisify(require("child_process").exec);
 const envSettings = new EnvSettings();
 
 const testOptions = envSettings.loadJsonFileSync("testOptions.json", "utf8");
+const columnNames = testOptions.columnNames;
+const reportMode = testOptions.reportMode;
 
 /**
  *
@@ -35,9 +37,15 @@ const createTable = (suiteIdentifier, stderr, virtualUser) => {
   tableHead.push("#".blue);
   colWidths.push(5);
 
-  testOptions.customColumns.forEach((column) => {
+  columnNames.forEach((column, index) => {
+    let columnWidth = 30;
+
+    if (reportMode === "dynamicDeep")
+      columnWidth = index !== 1 ? 25 : 50
+
+
     tableHead.push(`${column}`.blue);
-    colWidths.push(30);
+    colWidths.push(columnWidth);
   });
 
   tableHead.push("Status".blue);
@@ -68,19 +76,53 @@ const createTable = (suiteIdentifier, stderr, virtualUser) => {
       continue;
     }
 
-    const tableValues = path.slice(testIndex + 1, path.length - 1);
+    let tableValues = path.slice(testIndex + 1, path.length);
 
-    if (tableValues.length !== testOptions.customColumns.length) {
+    if (tableValues.length !== columnNames.length && reportMode !== 'dynamicDeep') {
       console.log(
         `${path[path.length - 1]} does not meet your columns definition.`.yellow
       );
+    }
+
+    /**
+     * If the type of report is dynamic, adjust depth of folders in columns
+     */
+    if (reportMode === 'dynamicDeep') {
+      let fixedColumns = [];
+
+      /**
+       * The first is always used for column 'C1'
+       */
+      fixedColumns.push(tableValues.shift());
+
+      /**
+       * Iterate and concatenate the folder to fixed
+       */
+      let dynamicColumn = ''
+      for (let index = 0; index < tableValues.length - 1; index++) {
+        index === 0 ? false : dynamicColumn += '/';
+        dynamicColumn += `${tableValues[index]}`
+      }
+
+      /**
+       * Add the fixed column 'C2'
+       */
+      fixedColumns.push(dynamicColumn)
+
+      /**
+       * Add the value of the last column 'C3'
+       */
+      fixedColumns.push(tableValues.pop())
+
+      // Replace table value
+      tableValues = fixedColumns
     }
 
     const contentToPush = [];
 
     contentToPush.push((testResultIndex + 1).toString());
 
-    for (let index = 0; index < testOptions.customColumns.length; index++) {
+    for (let index = 0; index < columnNames.length; index++) {
       if (tableValues[index]) {
         contentToPush.push(tableValues[index]);
       } else {
@@ -163,14 +205,14 @@ const main = () => {
         )
           .then((result) => {
             console.info(result.stderr.blue); //* Print the jest result
-            if (testOptions.customColumns.length > 0) {
+            if (columnNames.length > 0) {
               createTable(suiteIdentifier, result.stderr.blue, index);
             }
           })
           .catch((err) => {
             if (!err.killed) {
               console.info(err.stderr.red); //* Print the jest result
-              if (testOptions.customColumns.length > 0) {
+              if (columnNames.length > 0) {
                 createTable(suiteIdentifier, err.stderr.red, index);
               }
             } else {
