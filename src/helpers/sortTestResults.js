@@ -3,7 +3,7 @@ const os = require("os");
 /**
  * 
  * @param {array} results Test results
- * @returns {object}
+ * @returns {object} Order test results
  */
 const sortTestResults = (results) => {
 
