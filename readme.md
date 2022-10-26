@@ -54,7 +54,8 @@ You will have a `testOptions.json` file in the root of this project, you should 
 | name                  | Description                                                                                                                                         | Default Value          | Required |
 | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- | -------- |
 | files                 | The files or directory that you want to test, setting it to an empty array will test all files                                                      | []                     | false    |
-| customColumns         | The name of the columns that will be related to the directory structure                                                                             | []                     | true     |
+| reportMode            | Change the type of report keeping its default structure or adjusting the report columns                                                             | staticDeep             | true     |
+| columnNames           | The name of the columns that will be related to the directory structure                                                                             | []                     | true     |
 | virtualUserSuites     | The number of whole test suites you want to simulate and its specific configurations and variables, each test virtual user suite represents 1 user. | virtualUserSuite array | true     |
 | virtualUserMultiplier | If you want to execute more users. It multiplies the virtualUserSuites.                                                                             | 1                      | false    |
 
@@ -73,7 +74,8 @@ A `virtualUserSuite` object has the following properties:
 {
   "files": [],
   "virtualUserMultiplier": 1,
-  "customColumns": ["enterprise", "department", "feature", "scenario"],
+  "reportMode": "staticDeep",
+  "columnNames": ["enterprise", "department", "feature", "scenario"],
   "virtualUserSuites": [
     {
       "skip": false,
@@ -113,7 +115,8 @@ Example in `testOptions.json` file
 {
   "files": [],
   "virtualUserMultiplier": 1,
-  "customColumns": ["enterprise", "department", "feature", "scenario"],
+  "reportMode": "staticDeep",
+  "columnNames": ["enterprise", "department", "feature", "scenario"],
   "virtualUserSuites": [
     {
       "skip": false,
@@ -151,7 +154,8 @@ Example in `testOptions.json` file
 {
   "files": [],
   "virtualUserMultiplier": 1,
-  "customColumns": ["enterprise", "department", "feature", "scenario"],
+  "reportMode": "staticDeep",
+  "columnNames": ["enterprise", "department", "feature", "scenario"],
   "virtualUserSuites": [
     {
       "skip": false,
@@ -209,9 +213,11 @@ In the `testOptions.json` file:
 
 ```json
 {
-  "customColumns": ["enterprise", "department", "feature", "scenario"]
+  "columnNames": ["enterprise", "department", "feature", "scenario"]
 }
 ```
+
+For an advanced configuration of the type of report visit [Report mode](https://github.com/usil/selenium-nodejs-starter/wiki/Setting#report-mode)
 
 Then just create your tests using traditional jest and selenium. After that run:
 
