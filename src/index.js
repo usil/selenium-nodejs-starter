@@ -7,6 +7,7 @@ const os = require("os");
 const { EnvSettings } = require("advanced-settings");
 
 const util = require("util");
+const sortTestResults = require("./helpers/sortTestResults");
 
 const exec = util.promisify(require("child_process").exec);
 
@@ -59,7 +60,9 @@ const createTable = (suiteIdentifier, stderr, virtualUser) => {
 
   let testResultIndex = 0;
 
-  for (const testResult of jestOutput.testResults) {
+  let testResults = sortTestResults(jestOutput.testResults)
+
+  for (const testResult of testResults) {
     const path =
       os.type() === "Windows_NT"
         ? testResult.name.split("\\")
