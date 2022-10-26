@@ -7,6 +7,10 @@ const os = require("os");
  */
 const sortTestResults = (results) => {
 
+  // Return result if it only has one content
+  if (results.length === 1)
+    return results
+
   // Get the result object
   let object = results.slice(0);
 
