@@ -7,6 +7,7 @@ const os = require("os");
 const { EnvSettings } = require("advanced-settings");
 
 const util = require("util");
+
 const { formatVarsEnv, sortTestResults } = require("./helpers/testHelpers");
 
 const exec = util.promisify(require("child_process").exec);
