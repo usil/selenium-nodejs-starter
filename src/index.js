@@ -7,7 +7,7 @@ const os = require("os");
 const { EnvSettings } = require("advanced-settings");
 
 const util = require("util");
-const { setVarsEnv, sortTestResults } = require("./helpers/testHelpers");
+const { formatVarsEnv, sortTestResults } = require("./helpers/testHelpers");
 
 const exec = util.promisify(require("child_process").exec);
 
@@ -191,7 +191,7 @@ const main = () => {
         console.log(testFiles.join(" "));
 
         // Format variables for environment variables
-        let varToEnv = setVarsEnv(suite.variables)
+        let varToEnv = formatVarsEnv(suite.variables)
 
         /**
          * When not in windows, the path is added

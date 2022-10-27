@@ -36,7 +36,7 @@ const os = require("os");
  *  }
  * 
  */
-const setVarsEnv = (vars) => {
+const formatVarsEnv = (vars) => {
   let varsToEnv = {};
 
   for (const propertyObject in vars) {
@@ -130,4 +130,4 @@ const sortTestResults = (results) => {
   return object
 }
 
-module.exports = { setVarsEnv, getVarEnv, sortTestResults }
+module.exports = { formatVarsEnv, getVarEnv, sortTestResults }
