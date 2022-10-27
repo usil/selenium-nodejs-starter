@@ -7,7 +7,8 @@ const os = require("os");
 const { EnvSettings } = require("advanced-settings");
 
 const util = require("util");
-const sortTestResults = require("./helpers/sortTestResults");
+
+const { formatVarsEnv, sortTestResults } = require("./helpers/testHelpers");
 
 const exec = util.promisify(require("child_process").exec);
 
@@ -190,11 +191,14 @@ const main = () => {
 
         console.log(testFiles.join(" "));
 
+        // Format variables for environment variables
+        let varToEnv = formatVarsEnv(suite.variables)
+
         /**
          * When not in windows, the path is added
          */
         if (sysOS !== 'Windows_NT') {
-          suite.variables.PATH = process.env.PATH
+          varToEnv.PATH = process.env.PATH
         }
 
         //* Spawns the jest process
@@ -203,7 +207,7 @@ const main = () => {
             " "
           )}`,
           {
-            env: { ...suite.variables },
+            env: { ...varToEnv },
           }
         )
           .then((result) => {

@@ -1,8 +1,9 @@
 const seoHelpers = require("../../../../../src/helpers/seo.helpers");
 const getBrowserDriver = require("../../../../../src/browsers/browserDriver");
+const { getVarEnv } = require("../../../../../src/helpers/testHelpers");
 
-const url = process.env.url;
-const findString = process.env.searchText;
+const url = getVarEnv("url");
+const findString = getVarEnv("searchText");
 
 describe(`Link ${url} appears on the first 4 positions in the google search`, () => {
   let driver;
