@@ -3,6 +3,7 @@ require("dotenv").config();
 
 const Table = require("cli-table");
 const os = require("os");
+const { v4 } = require("uuid")
 
 const { EnvSettings } = require("advanced-settings");
 
@@ -40,10 +41,10 @@ const createTable = (suiteIdentifier, stderr, virtualUser) => {
   colWidths.push(5);
 
   columnNames.forEach((column, index) => {
-    let columnWidth = 30;
+    let columnWidth = 35;
 
     if (reportMode === "dynamicDeep")
-      columnWidth = index !== 1 ? 25 : 50
+      columnWidth = index !== 1 ? 35 : 50
 
 
     tableHead.push(`${column}`.blue);
@@ -116,7 +117,7 @@ const createTable = (suiteIdentifier, stderr, virtualUser) => {
       /**
        * Add the value of the last column 'C3'
        */
-      fixedColumns.push(tableValues.pop())
+      fixedColumns.push(tableValues.pop().split('.test')[0])
 
       // Replace table value
       tableValues = fixedColumns
@@ -157,7 +158,6 @@ const createTable = (suiteIdentifier, stderr, virtualUser) => {
  */
 const main = () => {
   let suiteIndex = 0;
-  const sysOS = os.type();
 
   for (
     let index = 0;
@@ -197,9 +197,14 @@ const main = () => {
         /**
          * When not in windows, the path is added
          */
-        if (sysOS !== 'Windows_NT') {
+        if (os.type() !== 'Windows_NT') {
           varToEnv.PATH = process.env.PATH
         }
+
+        /**
+         * Generate id for test
+         */
+        varToEnv.TEST_UUID = v4();
 
         //* Spawns the jest process
         exec(
@@ -211,14 +216,16 @@ const main = () => {
           }
         )
           .then((result) => {
-            console.info(result.stderr.blue); //* Print the jest result
+            // Print the jest result
+            console.info(`Test ID: ${varToEnv.TEST_UUID}\n`, result.stderr.blue);
             if (columnNames.length > 0) {
               createTable(suiteIdentifier, result.stderr.blue, index);
             }
           })
           .catch((err) => {
             if (!err.killed) {
-              console.info(err.stderr.red); //* Print the jest result
+              // Print the jest result
+              console.info(`Test ID: ${varToEnv.TEST_UUID}\n`, err.stderr.red);
               if (columnNames.length > 0) {
                 createTable(suiteIdentifier, err.stderr.red, index);
               }

@@ -1,5 +1,7 @@
 node_modules
+screenshot
+tmp
 jest-output.json
-.env
 *-jest-output.json
 package-lock.json
+.env
