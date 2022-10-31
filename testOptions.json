@@ -1,7 +1,7 @@
 {
   "files": [],
   "virtualUserMultiplier": 1,
-  "reportMode": "dynamicDeep",
+  "reportMode": "staticDeep",
   "columnNames": [
     "enterprise",
     "feature",
