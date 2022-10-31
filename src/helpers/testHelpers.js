@@ -1,6 +1,39 @@
 const os = require("os");
-const fs = require("fs")
-const path = require("path")
+const fs = require("fs");
+const path = require("path");
+
+/**
+ * 
+ * @param {string} string String of text to clean
+ * @returns {string}
+ * @description
+ * Clear the text string and return the clean string
+ */
+const getCleanedString = (string) => {
+  // Characters we don't want to support
+  var specialChars = "!@#$^&%*()+=-[]\/{}|:<>?,.";
+
+  // Remove characters we don't support
+  for (var i = 0; i < specialChars.length; i++) {
+    string = string.replaceAll(new RegExp("\\" + specialChars[i], 'gi'), '');
+  }
+
+  // Convert to lowercase
+  string = string.toLowerCase();
+
+  // Replace spaces with "_"
+  string = string.replace(/ /g, "_");
+
+  // Replace special characters
+  string = string.replace(/á/gi, "a");
+  string = string.replace(/é/gi, "e");
+  string = string.replace(/í/gi, "i");
+  string = string.replace(/ó/gi, "o");
+  string = string.replace(/ú/gi, "u");
+  string = string.replace(/ñ/gi, "n");
+
+  return string;
+}
 
 /**
  * 
@@ -185,14 +218,17 @@ const driverScreenshot = async (driver, filePath, runningTest) => {
 
   // Get id test 
   if (runningTest) {
-    var running_test = runningTest.split('-')[0].trim()
+    var running_test = {
+      id: runningTest.split('-')[0].trim(),
+      scenario: runningTest.split('-')[1].trim()
+    }
   }
 
   /**
    * File name : ID Test + Scenario + Date
    */
   const file =
-    `${running_test} - ${file_path.pop().split('.test')[0]} _ ${screenshot_date}.png`
+    `${running_test.id || screenshot_date}_${getCleanedString(running_test.scenario)}.png`;
 
   // Verify that the default folder for screenshots exists
   if (!fs.existsSync(DEFAULT_PATH))
