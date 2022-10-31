@@ -188,7 +188,11 @@ const driverScreenshot = async (driver, filePath, runningTest) => {
     var running_test = runningTest.split('-')[0].trim()
   }
 
-  const file = `${(running_test || screenshot_date) + '-'}${file_path.pop().split('.test')[0]}.png`
+  /**
+   * File name : ID Test + Scenario + Date
+   */
+  const file =
+    `${running_test} - ${file_path.pop().split('.test')[0]} _ ${screenshot_date}.png`
 
   // Verify that the default folder for screenshots exists
   if (!fs.existsSync(DEFAULT_PATH))
