@@ -220,8 +220,8 @@ const driverScreenshot = async (driver, filePath, runningTest) => {
   if (runningTest) {
     runningTest = runningTest.split('-')
     var running_test = {
-      id: runningTest.length > 1 ? runningTest[0] : null,
-      scenario: runningTest.length > 1 ? runningTest[1] : runningTest[0]
+      id: runningTest.length > 1 ? runningTest[0].trim() : null,
+      scenario: runningTest.length > 1 ? runningTest[1].trim() : runningTest[0].trim()
     }
   }
 
