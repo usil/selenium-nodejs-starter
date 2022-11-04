@@ -222,11 +222,11 @@ For an advanced configuration of the type of report visit [Report mode](https://
 Then just create your tests using traditional jest and selenium. After that run:
 
 ```
-# install chromedriver with the detected version
-npm install chromedriver --detect_chromedriver_version
-
 # install dependencies
 npm install
+
+# install chromedriver with the detected version
+npm install chromedriver --detect_chromedriver_version
 
 # Run test
 npm test

@@ -1,6 +1,6 @@
 const seoHelpers = require("../../../../../src/helpers/seo.helpers");
 const getBrowserDriver = require("../../../../../src/browsers/browserDriver");
-const { getVarEnv } = require("../../../../../src/helpers/testHelpers");
+const { getVarEnv, driverScreenshot } = require("../../../../../src/helpers/testHelpers");
 
 const url = getVarEnv("url");
 const findString = getVarEnv("searchText");
@@ -22,6 +22,7 @@ describe(`Link ${url} appears on the first 4 positions in the google search`, ()
       findString,
       url
     );
+
     expect(linkIndex).toBeGreaterThan(-1);
     expect(linkIndex).toBeLessThan(4);
   });

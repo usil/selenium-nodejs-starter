@@ -1,4 +1,39 @@
 const os = require("os");
+const fs = require("fs");
+const path = require("path");
+
+/**
+ * 
+ * @param {string} string String of text to clean
+ * @returns {string}
+ * @description
+ * Clear the text string and return the clean string
+ */
+const getCleanedString = (string) => {
+  // Characters we don't want to support
+  var specialChars = "!@#$^&%*()+=-[]\/{}|:<>?,.";
+
+  // Remove characters we don't support
+  for (var i = 0; i < specialChars.length; i++) {
+    string = string.replaceAll(new RegExp("\\" + specialChars[i], 'gi'), '');
+  }
+
+  // Convert to lowercase
+  string = string.toLowerCase();
+
+  // Replace spaces with "_"
+  string = string.replace(/ /g, "_");
+
+  // Replace special characters
+  string = string.replace(/á/gi, "a");
+  string = string.replace(/é/gi, "e");
+  string = string.replace(/í/gi, "i");
+  string = string.replace(/ó/gi, "o");
+  string = string.replace(/ú/gi, "u");
+  string = string.replace(/ñ/gi, "n");
+
+  return string;
+}
 
 /**
  * 
@@ -14,14 +49,14 @@ const os = require("os");
  * Defined Variables :
  *  "variables" : {
  *      "looneyTunes" : {
- *        "character":"coyote",
+ *        "character": "coyote",
  *        "category" : "guns",
- *        item":"bomb"
+ *        "item": "bomb"
  *      },
  *     "cartoonNetwork" : {
- *        "character":"dexter",
+ *        "character": "dexter",
  *        "category" : "laboratory",
- *        item":"door"
+ *        "item": "door"
  *      }
  *  }
  * 
@@ -37,42 +72,42 @@ const os = require("os");
  * 
  */
 const formatVarsEnv = (vars) => {
-  let varsToEnv = {};
+  let vars_to_env = {};
 
   for (const propertyObject in vars) {
     /**
      * If the property does not have an object assigned, the property and its 
-     * value are used for the varsToEnv
+     * value are used for the vars_to_env
      */
     if (vars[propertyObject].length > 0) {
-      let newVar = `
+      let new_var = `
         {"${propertyObject}":"${vars[propertyObject]}"}
       `;
 
-      newVar = JSON.parse(newVar)
+      new_var = JSON.parse(new_var)
 
-      varsToEnv = { ...varsToEnv, ...newVar }
+      vars_to_env = { ...vars_to_env, ...new_var }
     }
 
     /**
      * If the property has an object assigned, the assigned object is iterated 
      * and the initial property is contacted with that of the contained object 
-     * and assigning its value to this new property to add it to varsToEnv
+     * and assigning its value to this new property to add it to vars_to_env
      */
     else {
       for (const propertyValue in vars[propertyObject]) {
-        let newVar = `
+        let new_var = `
           {"${propertyObject}___${propertyValue}":"${vars[propertyObject][propertyValue]}"}
         `;
 
-        newVar = JSON.parse(newVar)
+        new_var = JSON.parse(new_var)
 
-        varsToEnv = { ...varsToEnv, ...newVar }
+        vars_to_env = { ...vars_to_env, ...new_var }
       }
     }
   }
 
-  return varsToEnv;
+  return vars_to_env;
 }
 
 /**
@@ -83,12 +118,33 @@ const formatVarsEnv = (vars) => {
  * @description 
  * Gets the transformed environment variables
  * 
+ * How to use:
+ *  Para las propiedades definidas:
+ *  "variables" : {
+ *    "lonneyTunes___character": "coyote",
+ *    "lonneyTunes___category": "guns",
+ *    "lonneyTunes___item": "bomb",
+ *    "cartoonNetwork___character": "dexter",
+ *    "cartoonNetwork___category": "laboratory",
+ *    "cartoonNetwork___item": "door"
+ *  }
+ * 
+ * In case you want to get the "lonneyTunes___character" property:
+ * 
+ * Call the function with the format: object.key
+ * 
+ * Example :
+ * 
+ * Run function : getVarEnv('lonneyTunes.character')
+ * 
+ * This returns : "coyote"
+ * 
  */
 const getVarEnv = (variable) => {
-  let varsSearch = variable.replace('.', '___');
-  varsSearch = process.env[varsSearch];
+  let var_search = variable.replace('.', '___');
+  var_search = process.env[var_search];
 
-  return varsSearch
+  return var_search
 }
 
 /**
@@ -109,12 +165,12 @@ const sortTestResults = (results) => {
   let object = results.slice(0);
 
   // Define the type of separator according to the system
-  let osSplit = os.type() === "Windows_NT" ? "\\" : "/";
+  const OS_SPLIT = os.type() === "Windows_NT" ? "\\" : "/";
 
   // Get the results in alphabetical order at the first level
   object.sort((firstElement, secondElement) => {
-    let first = firstElement.name.split(osSplit)
-    let second = secondElement.name.split(osSplit)
+    let first = firstElement.name.split(OS_SPLIT)
+    let second = secondElement.name.split(OS_SPLIT)
 
     const testsIndex = first.indexOf('tests')
 
@@ -130,4 +186,82 @@ const sortTestResults = (results) => {
   return object
 }
 
-module.exports = { formatVarsEnv, getVarEnv, sortTestResults }
+/**
+ * 
+ * @param {object} driver Selenium driver
+ * @param {string} filePath Path where the test is executed
+ * 
+ * @description
+ * Take a screenshot of the window that is being navigated with the driver, 
+ * save this capture in screenshots grouped by the first column of the test
+ */
+const driverScreenshot = async (driver, filePath, runningTest) => {
+  const SPLIT_PATH = os.type() === "Windows_NT" ? "\\" : "/";
+  const DEFAULT_PATH = './screenshots';
+  const TEST_UUID = getVarEnv('TEST_UUID');
+
+  // Get the execution path of the test and add the folder for the test id
+  let file_path = filePath.split(SPLIT_PATH);
+  let tests_index = file_path.indexOf('tests');
+
+  file_path = file_path.slice(tests_index + 1);
+  file_path.unshift(TEST_UUID);
+
+  // Take the screenshot
+  const screenshot = await driver.takeScreenshot();
+
+  // Create file name
+  let date = new Date();
+  let screenshot_date =
+    date.toLocaleDateString().replaceAll('/', '_') + '_' +
+    date.toLocaleTimeString('en-US', { hour12: false }).replaceAll(':', '-');
+
+  // Get id test 
+  if (runningTest) {
+    runningTest = runningTest.split('-')
+    var running_test = {
+      id: runningTest.length > 1 ? runningTest[0].trim() : null,
+      scenario: runningTest.length > 1 ? runningTest[1].trim() : runningTest[0].trim()
+    }
+  }
+
+  /**
+   * File name : ID Test + Scenario + Date
+   */
+  const file =
+    `${running_test.id || screenshot_date}_${getCleanedString(running_test.scenario)}.png`;
+
+  // Verify that the default folder for screenshots exists
+  if (!fs.existsSync(DEFAULT_PATH))
+    await fs.promises.mkdir(DEFAULT_PATH)
+
+  // Build the screenshot path
+  let screenshot_test_path = '';
+  file_path.map(el => {
+    screenshot_test_path += `${SPLIT_PATH}${el}`
+  })
+
+  // Create the folders to save the screenshot
+  await fs.promises.mkdir(path.join(DEFAULT_PATH, screenshot_test_path), { recursive: true })
+
+  // Create the file in the defined path
+  fs.writeFile(
+    `${DEFAULT_PATH}${screenshot_test_path}${SPLIT_PATH}${file}`,
+    await screenshot,
+    { encoding: 'base64' },
+    (err) => {
+      if (err) {
+        console.log(err)
+      } else {
+        console.log('File written successfully\n', `${file}`)
+      }
+    }
+  )
+}
+
+module.exports = {
+  formatVarsEnv,
+  getVarEnv,
+  sortTestResults,
+  driverScreenshot
+}
