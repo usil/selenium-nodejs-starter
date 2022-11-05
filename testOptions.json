@@ -10,20 +10,10 @@
   "virtualUserSuites": [
     {
       "skip": false,
-      "identifier": "first-test",
+      "identifier": "first-run",
       "files": [],
       "variables": {
-        "url": "https://usil.edu.pe/",
-        "searchText": "USIL"
-      }
-    },
-    {
-      "skip": false,
-      "identifier": "second-test",
-      "files": [],
-      "variables": {
-        "url": "https://www.coloringdreams.com/",
-        "searchText": "${SECRET_SEARCH}"
+        "foo": "bar"
       }
     }
   ]

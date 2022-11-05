@@ -26,11 +26,23 @@ const reportMode = testOptions.reportMode;
  * @param {number} virtualUser
  * @description Print the report table
  */
-const createTable = (suiteIdentifier, stderr, virtualUser) => {
+const createTable = (suiteIdentifier, virtualUser, testUuid) => {
   const jestOutput = require(`../${suiteIdentifier}-jest-output.json`);
 
+  let date = new Date();
+
   console.info(
-    `\n# ${virtualUser} Jest report table for the ${suiteIdentifier} suite\n`
+    `\n# ${virtualUser} Jest report : ${suiteIdentifier}\n`
+      .yellow.bold
+  );
+
+  console.info(
+    `Test uuid: ${testUuid}\n`
+      .yellow.bold
+  );
+
+  console.info(
+    `Test timestamp: ${date.toString()}\n`
       .yellow.bold
   );
 
@@ -145,11 +157,6 @@ const createTable = (suiteIdentifier, stderr, virtualUser) => {
     testResultIndex++;
   } //* Inserts data to the table
 
-  console.info(
-    `\n# ${virtualUser}Report table for the ${suiteIdentifier} suite\n`.yellow
-      .bold
-  );
-
   console.info(table.toString() + "\n"); //* Prints the table
 };
 
@@ -217,17 +224,17 @@ const main = () => {
         )
           .then((result) => {
             // Print the jest result
-            console.info(`Test ID: ${varToEnv.TEST_UUID}\n`, result.stderr.blue);
+            console.info(result.stderr.blue);
             if (columnNames.length > 0) {
-              createTable(suiteIdentifier, result.stderr.blue, index);
+              createTable(suiteIdentifier, index, varToEnv.TEST_UUID);
             }
           })
           .catch((err) => {
             if (!err.killed) {
               // Print the jest result
-              console.info(`Test ID: ${varToEnv.TEST_UUID}\n`, err.stderr.red);
+              console.info(err.stderr.red);
               if (columnNames.length > 0) {
-                createTable(suiteIdentifier, err.stderr.red, index);
+                createTable(suiteIdentifier, index, varToEnv.TEST_UUID);
               }
             } else {
               console.error("error".red, err);

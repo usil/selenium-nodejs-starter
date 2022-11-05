@@ -135,12 +135,12 @@ const formatVarsEnv = (vars) => {
  * 
  * Example :
  * 
- * Run function : getVarEnv('lonneyTunes.character')
+ * Run function : getVariable('lonneyTunes.character')
  * 
  * This returns : "coyote"
  * 
  */
-const getVarEnv = (variable) => {
+const getVariable = (variable) => {
   let var_search = variable.replace('.', '___');
   var_search = process.env[var_search];
 
@@ -195,10 +195,10 @@ const sortTestResults = (results) => {
  * Take a screenshot of the window that is being navigated with the driver, 
  * save this capture in screenshots grouped by the first column of the test
  */
-const driverScreenshot = async (driver, filePath, runningTest) => {
+const takeScreenshot = async (driver, filePath, screenshotAlias) => {
   const SPLIT_PATH = os.type() === "Windows_NT" ? "\\" : "/";
   const DEFAULT_PATH = './screenshots';
-  const TEST_UUID = getVarEnv('TEST_UUID');
+  const TEST_UUID = getVariable('TEST_UUID');
 
   // Get the execution path of the test and add the folder for the test id
   let file_path = filePath.split(SPLIT_PATH);
@@ -210,26 +210,10 @@ const driverScreenshot = async (driver, filePath, runningTest) => {
   // Take the screenshot
   const screenshot = await driver.takeScreenshot();
 
-  // Create file name
-  let date = new Date();
-  let screenshot_date =
-    date.toLocaleDateString().replaceAll('/', '_') + '_' +
-    date.toLocaleTimeString('en-US', { hour12: false }).replaceAll(':', '-');
-
-  // Get id test 
-  if (runningTest) {
-    runningTest = runningTest.split('-')
-    var running_test = {
-      id: runningTest.length > 1 ? runningTest[0].trim() : null,
-      scenario: runningTest.length > 1 ? runningTest[1].trim() : runningTest[0].trim()
-    }
-  }
-
   /**
-   * File name : ID Test + Scenario + Date
+   * File name : create a sanitized file name from screenshot alias
    */
-  const file =
-    `${running_test.id || screenshot_date}_${getCleanedString(running_test.scenario)}.png`;
+  const file =`${getCleanedString(screenshotAlias)}.png`;
 
   // Verify that the default folder for screenshots exists
   if (!fs.existsSync(DEFAULT_PATH))
@@ -261,7 +245,7 @@ const driverScreenshot = async (driver, filePath, runningTest) => {
 
 module.exports = {
   formatVarsEnv,
-  getVarEnv,
+  getVariable,
   sortTestResults,
-  driverScreenshot
+  takeScreenshot
 }
