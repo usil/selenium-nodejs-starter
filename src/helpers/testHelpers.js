@@ -284,7 +284,7 @@ const createReportWeb = async (UUID, indexReport, jestOutput, reportData, column
 
   report_data_json.columnsData = reportData
 
-  report_data_json.report_name = 'Report';
+  report_data_json.report_name = UUID;
   report_data_json.passed = jestOutput.numPassedTests;
   report_data_json.failed = jestOutput.numFailedTests;
   report_data_json.total = jestOutput.numTotalTests;
