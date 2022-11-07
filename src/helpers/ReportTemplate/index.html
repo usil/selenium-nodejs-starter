@@ -231,7 +231,7 @@
         });
 
         let cell4 = row.insertCell(4);
-        cell4.innerHTML = 'passed';
+        cell4.innerHTML = scenarioStat.status;
 
         if (scenarioStat.status === 'passed') {
           cell4.className = 'test-result-step-result-cell-ok'
