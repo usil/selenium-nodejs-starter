@@ -29,7 +29,7 @@ describe(`Webs publicas deben de tener la url correcta`, () => {
     var firstResult = await linksContainers[0].getText();
     var urlRegex = /(https?:\/\/[^ ]*)/;
     var url = firstResult.match(urlRegex)[1];
-    expect(url.split("\n")[0]).toBe("https://ww.coloringdreams.com");
+    expect(url.split("\n")[0]).toBe("https://www.coloringdreams.com");
 
   });
 

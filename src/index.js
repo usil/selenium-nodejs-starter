@@ -20,9 +20,9 @@ const reportWeb = testOptions.reportWeb;
 
 /**
  *
- * @param {string | number} suiteIdentifier
- * @param {string} stderr
- * @param {number} virtualUser
+ * @param {string | number} suiteIdentifier Test Suite Identifier
+ * @param {number} virtualUser Test run number
+ * @param {string} testUuid Running test identifier
  * @description Print the report table
  */
 const createTable = (suiteIdentifier, virtualUser, testUuid) => {
@@ -159,7 +159,16 @@ const createTable = (suiteIdentifier, virtualUser, testUuid) => {
   console.info(table.toString() + "\n"); //* Prints the table
 };
 
-const createReportHTML = (suiteIdentifier, index, UUID) => {
+/**
+ * 
+ * @param {string | number} suiteIdentifier Test Suite Identifier
+ * @param {number} virtualUser Test run number
+ * @param {string} testUuid Running test identifier
+ * @description
+ * Adapt the test results to three columns and then call the function 
+ * to create the web report
+ */
+const createReportHTML = (suiteIdentifier, virtualUser, testUuid) => {
   /**
    * Verify that the report is generated in HTML
    */
@@ -202,24 +211,24 @@ const createReportHTML = (suiteIdentifier, index, UUID) => {
     /**
      * Iterate and concatenate the folder to fixed
      */
-    let dynamicColumn = ''
+    let dynamicColumn = '';
     for (let index = 0; index < tableValues.length - 1; index++) {
       index === 0 ? false : dynamicColumn += '/';
-      dynamicColumn += `${tableValues[index]}`
+      dynamicColumn += `${tableValues[index]}`;
     }
 
     /**
      * Add the fixed column 'C2'
      */
-    fixedColumns.push(dynamicColumn)
+    fixedColumns.push(dynamicColumn);
 
     /**
      * Add the value of the last column 'C3'
      */
-    fixedColumns.push(tableValues.pop().split('.test')[0])
+    fixedColumns.push(tableValues.pop().split('.test')[0]);
 
     // Replace table value
-    tableValues = fixedColumns
+    tableValues = fixedColumns;
 
     if (tableValues) {
       let value = [
@@ -230,19 +239,18 @@ const createReportHTML = (suiteIdentifier, index, UUID) => {
             : testResult.status
         ],
         ...[error_log = testResult.message]
-      ]
+      ];
       dataToReport.push(value);
     }
   }
 
-  createReportWeb(UUID, index, jestOutput, dataToReport, columnNames)
+  createReportWeb(testUuid, virtualUser, jestOutput, dataToReport, columnNames);
 };
 
 /**
  * @description app entrypoint
  */
 const main = () => {
-  let suiteIndex = 0;
 
   for (
     let index = 0;
@@ -253,7 +261,7 @@ const main = () => {
       if (!suite.skip) {
         const suiteIdentifier = suite.identifier
           ? suite.identifier
-          : suiteIndex;
+          : index;
 
         console.info(
           `#${index} Starting test in ${suiteIdentifier} suite`.bgMagenta
@@ -321,7 +329,6 @@ const main = () => {
             }
           });
       }
-      suiteIndex++;
     }
   }
 };

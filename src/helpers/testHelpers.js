@@ -245,16 +245,16 @@ const takeScreenshot = async (driver, filePath, screenshotAlias) => {
 
 /**
  * 
- * @param {string} UUID Test identifier
- * @param {number} indexReport Test run number
+ * @param {string} testUuid Test identifier
+ * @param {number} virtualUser Test run number
  * @param {object} reportDataJSON Data returned by the jest
  * @param {array} columnsName Column names
  * 
  * @description
  * Generate the file in HTML, for the test results
  */
-const createReportWeb = async (UUID, indexReport, jestOutput, reportData, columnsName) => {
-  
+const createReportWeb = async (testUuid, virtualUser, jestOutput, reportData, columnsName) => {
+
   /**
    * @description
    * Receive the seconds and return in hh:mm:ss format
@@ -285,7 +285,7 @@ const createReportWeb = async (UUID, indexReport, jestOutput, reportData, column
 
   report_data_json.columnsData = reportData;
 
-  report_data_json.report_name = UUID;
+  report_data_json.report_name = testUuid;
   report_data_json.passed = jestOutput.numPassedTests;
   report_data_json.failed = jestOutput.numFailedTests;
   report_data_json.total = jestOutput.numTotalTests;
@@ -301,10 +301,10 @@ const createReportWeb = async (UUID, indexReport, jestOutput, reportData, column
     if (!fs.existsSync("./report"))
       await fs.promises.mkdir(`./report`);
 
-    if (!fs.existsSync(`./report/${UUID}`))
-      await fs.promises.mkdir(`./report/${UUID}/${indexReport}/`, { recursive: true });
+    if (!fs.existsSync(`./report/${testUuid}`))
+      await fs.promises.mkdir(`./report/${testUuid}/${virtualUser}/`, { recursive: true });
 
-    fs.writeFileSync(`./report/${UUID}/${indexReport}/index.html`, result, 'utf-8');
+    fs.writeFileSync(`./report/${testUuid}/${virtualUser}/index.html`, result, 'utf-8');
   } catch (err) {
     console.log(err)
   }
