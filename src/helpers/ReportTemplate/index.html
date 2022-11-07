@@ -216,7 +216,6 @@
 
       data.reportRows.forEach(function (scenarioStat, i) {
 
-        console.log(scenarioStat)
         var row = table.insertRow();
         row.id = i;
 
@@ -285,11 +284,14 @@
       var errorRow = table.insertRow();
       errorRow.id = rowId;
       errorRow.style = "display:none"
+
       var errorCell = errorRow.insertCell();
-      errorCell.setAttribute("colspan", 3);
+      errorCell.setAttribute("colspan", 5);
       errorCell.className = 'error'
+
       var pre = document.createElement("pre");
       pre.textContent = errorText;
+
       errorCell.appendChild(pre);
     }
 

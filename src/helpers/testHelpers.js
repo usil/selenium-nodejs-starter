@@ -254,6 +254,7 @@ const takeScreenshot = async (driver, filePath, screenshotAlias) => {
  * Generate the file in HTML, for the test results
  */
 const createReportWeb = async (UUID, indexReport, jestOutput, reportData, columnsName) => {
+  
   /**
    * @description
    * Receive the seconds and return in hh:mm:ss format
@@ -282,7 +283,7 @@ const createReportWeb = async (UUID, indexReport, jestOutput, reportData, column
       1000
     );
 
-  report_data_json.columnsData = reportData
+  report_data_json.columnsData = reportData;
 
   report_data_json.report_name = UUID;
   report_data_json.passed = jestOutput.numPassedTests;

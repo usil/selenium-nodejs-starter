@@ -189,45 +189,37 @@ const createReportHTML = (suiteIdentifier, index, UUID) => {
 
     let tableValues = path.slice(testIndex + 1, path.length);
 
-    if (tableValues.length !== columnNames.length && reportMode !== 'dynamicDeep') {
-      console.log(
-        `${path[path.length - 1]} does not meet your columns definition.`.yellow
-      );
+    /**
+     * Adjust the columns for the web report
+     */
+    let fixedColumns = [];
+
+    /**
+     * The first is always used for column 'C1'
+     */
+    fixedColumns.push(tableValues.shift());
+
+    /**
+     * Iterate and concatenate the folder to fixed
+     */
+    let dynamicColumn = ''
+    for (let index = 0; index < tableValues.length - 1; index++) {
+      index === 0 ? false : dynamicColumn += '/';
+      dynamicColumn += `${tableValues[index]}`
     }
 
     /**
-     * If the type of report is dynamic, adjust depth of folders in columns
+     * Add the fixed column 'C2'
      */
-    if (reportMode === 'dynamicDeep') {
-      let fixedColumns = [];
+    fixedColumns.push(dynamicColumn)
 
-      /**
-       * The first is always used for column 'C1'
-       */
-      fixedColumns.push(tableValues.shift());
+    /**
+     * Add the value of the last column 'C3'
+     */
+    fixedColumns.push(tableValues.pop().split('.test')[0])
 
-      /**
-       * Iterate and concatenate the folder to fixed
-       */
-      let dynamicColumn = ''
-      for (let index = 0; index < tableValues.length - 1; index++) {
-        index === 0 ? false : dynamicColumn += '/';
-        dynamicColumn += `${tableValues[index]}`
-      }
-
-      /**
-       * Add the fixed column 'C2'
-       */
-      fixedColumns.push(dynamicColumn)
-
-      /**
-       * Add the value of the last column 'C3'
-       */
-      fixedColumns.push(tableValues.pop().split('.test')[0])
-
-      // Replace table value
-      tableValues = fixedColumns
-    }
+    // Replace table value
+    tableValues = fixedColumns
 
     if (tableValues) {
       let value = [
