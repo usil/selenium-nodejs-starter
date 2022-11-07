@@ -16,7 +16,7 @@ const envSettings = new EnvSettings();
 const testOptions = envSettings.loadJsonFileSync("testOptions.json", "utf8");
 const columnNames = testOptions.columnNames;
 const reportMode = testOptions.reportMode;
-const createReportToWeb = testOptions.createReportToWeb;
+const reportWeb = testOptions.reportWeb;
 
 /**
  *
@@ -163,7 +163,7 @@ const createReportHTML = (suiteIdentifier, index, UUID) => {
   /**
    * Verify that the report is generated in HTML
    */
-  if (!createReportToWeb)
+  if (!reportWeb)
     return;
 
   const jestOutput = require(`../${suiteIdentifier}-jest-output.json`);

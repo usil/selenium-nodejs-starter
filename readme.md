@@ -39,6 +39,7 @@ You will have a `testOptions.json` file in the root of this project, you should 
 | name                  | Description                                                                                                                                         | Default Value          | Required |
 | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- | -------- |
 | files                 | The files or directory that you want to test, setting it to an empty array will test all files                                                      | []                     | false    |
+| reportWeb             | Generate report on Web(HTML)                                                                                                                        | false                  | true     |
 | reportMode            | Change the type of report keeping its default structure or adjusting the report columns                                                             | staticDeep             | true     |
 | columnNames           | The name of the columns that will be related to the directory structure                                                                             | []                     | true     |
 | virtualUserSuites     | The number of whole test suites you want to simulate and its specific configurations and variables, each test virtual user suite represents 1 user. | virtualUserSuite array | true     |
@@ -59,6 +60,7 @@ Example of an empty `testOptions.json` file
 {
   "files": [],
   "virtualUserMultiplier": 1,
+  "reportWeb":true,
   "reportMode": "staticDeep",
   "columnNames": ["enterprise", "feature", "scenario"],
   "virtualUserSuites": [
@@ -82,6 +84,7 @@ Example in `testOptions.json` file
 {
   "files": [],
   "virtualUserMultiplier": 1,
+  "reportWeb":true,
   "reportMode": "staticDeep",
   "columnNames": ["enterprise", "feature", "scenario"],
   "virtualUserSuites": [
