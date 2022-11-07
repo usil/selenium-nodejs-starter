@@ -1,6 +1,6 @@
 const seoHelpers = require("../../../../../src/helpers/seo.helpers");
 const getBrowserDriver = require("../../../../../src/browsers/browserDriver");
-const { getVarEnv, driverScreenshot } = require("../../../../../src/helpers/testHelpers");
+const { getVarEnv } = require("../../../../../src/helpers/testHelpers");
 const webdriver = require('selenium-webdriver');
 const By = webdriver.By;
 const Key = webdriver.Key;
