@@ -213,7 +213,7 @@ const takeScreenshot = async (driver, filePath, screenshotAlias) => {
   /**
    * File name : create a sanitized file name from screenshot alias
    */
-  const file =`${getCleanedString(screenshotAlias)}.png`;
+  const file = `${getCleanedString(screenshotAlias)}.png`;
 
   // Verify that the default folder for screenshots exists
   if (!fs.existsSync(DEFAULT_PATH))
@@ -243,9 +243,76 @@ const takeScreenshot = async (driver, filePath, screenshotAlias) => {
   )
 }
 
+/**
+ * 
+ * @param {string} UUID Test identifier
+ * @param {number} indexReport Test run number
+ * @param {object} reportDataJSON Data returned by the jest
+ * @param {array} columnsName Column names
+ * 
+ * @description
+ * Generate the file in HTML, for the test results
+ */
+const createReportWeb = async (UUID, indexReport, jestOutput, reportData, columnsName) => {
+  /**
+   * @description
+   * Receive the seconds and return in hh:mm:ss format
+   * 
+   * @returns {string}
+   */
+  function __secondsToDurationStr(seconds) {
+    let hour = Math.floor(seconds / 3600);
+    hour = (hour < 10) ? '0' + hour : hour;
+
+    let minute = Math.floor((seconds / 60) % 60);
+    minute = (minute < 10) ? '0' + minute : minute;
+
+    let second = Math.floor(seconds % 60);
+    second = (second < 10) ? '0' + second : second;
+
+    return hour + ':' + minute + ':' + second;
+  }
+
+  let report_data_json = {};
+
+  report_data_json.duration =
+    __secondsToDurationStr(
+      (jestOutput.testResults[0].endTime -
+        jestOutput.testResults[0].startTime) /
+      1000
+    );
+
+  report_data_json.columnsData = reportData
+
+  report_data_json.report_name = 'Report';
+  report_data_json.passed = jestOutput.numPassedTests;
+  report_data_json.failed = jestOutput.numFailedTests;
+  report_data_json.total = jestOutput.numTotalTests;
+
+  try {
+    const index = fs.readFileSync('./src/helpers/ReportTemplate/index.html', { encoding: 'utf8' });
+
+    let result = index.replace(/#data_report/g, JSON.stringify(report_data_json));
+    result = result.replace(/#columns_name/g, JSON.stringify(columnsName));
+    result = result.replace(/#report_duration/g, report_data_json.duration);
+
+    // Verify that the default folder for report exists
+    if (!fs.existsSync("./report"))
+      await fs.promises.mkdir(`./report`);
+
+    if (!fs.existsSync(`./report/${UUID}`))
+      await fs.promises.mkdir(`./report/${UUID}/${indexReport}/`, { recursive: true });
+
+    fs.writeFileSync(`./report/${UUID}/${indexReport}/index.html`, result, 'utf-8');
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 module.exports = {
   formatVarsEnv,
   getVariable,
   sortTestResults,
-  takeScreenshot
+  takeScreenshot,
+  createReportWeb
 }

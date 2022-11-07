@@ -4,12 +4,10 @@ require("dotenv").config();
 const Table = require("cli-table");
 const os = require("os");
 const { v4 } = require("uuid")
-
 const { EnvSettings } = require("advanced-settings");
-
 const util = require("util");
 
-const { formatVarsEnv, sortTestResults } = require("./helpers/testHelpers");
+const { formatVarsEnv, sortTestResults, createReportWeb } = require("./helpers/testHelpers");
 
 const exec = util.promisify(require("child_process").exec);
 
@@ -18,6 +16,7 @@ const envSettings = new EnvSettings();
 const testOptions = envSettings.loadJsonFileSync("testOptions.json", "utf8");
 const columnNames = testOptions.columnNames;
 const reportMode = testOptions.reportMode;
+const createReportToWeb = testOptions.createReportToWeb;
 
 /**
  *
@@ -160,6 +159,93 @@ const createTable = (suiteIdentifier, virtualUser, testUuid) => {
   console.info(table.toString() + "\n"); //* Prints the table
 };
 
+const createReportHTML = (suiteIdentifier, index, UUID) => {
+  /**
+   * Verify that the report is generated in HTML
+   */
+  if (!createReportToWeb)
+    return;
+
+  const jestOutput = require(`../${suiteIdentifier}-jest-output.json`);
+  let testResults = sortTestResults(jestOutput.testResults);
+
+  const dataToReport = [];
+
+  for (const testResult of testResults) {
+    const path =
+      os.type() === "Windows_NT"
+        ? testResult.name.split("\\")
+        : testResult.name.split("/");
+
+    const testIndex = path.indexOf("tests");
+
+    if (testIndex === -1) {
+      console.log(
+        `${path[path.length - 1]} test is not inside the correct directory.`
+          .yellow
+      );
+      continue;
+    }
+
+    let tableValues = path.slice(testIndex + 1, path.length);
+
+    if (tableValues.length !== columnNames.length && reportMode !== 'dynamicDeep') {
+      console.log(
+        `${path[path.length - 1]} does not meet your columns definition.`.yellow
+      );
+    }
+
+    /**
+     * If the type of report is dynamic, adjust depth of folders in columns
+     */
+    if (reportMode === 'dynamicDeep') {
+      let fixedColumns = [];
+
+      /**
+       * The first is always used for column 'C1'
+       */
+      fixedColumns.push(tableValues.shift());
+
+      /**
+       * Iterate and concatenate the folder to fixed
+       */
+      let dynamicColumn = ''
+      for (let index = 0; index < tableValues.length - 1; index++) {
+        index === 0 ? false : dynamicColumn += '/';
+        dynamicColumn += `${tableValues[index]}`
+      }
+
+      /**
+       * Add the fixed column 'C2'
+       */
+      fixedColumns.push(dynamicColumn)
+
+      /**
+       * Add the value of the last column 'C3'
+       */
+      fixedColumns.push(tableValues.pop().split('.test')[0])
+
+      // Replace table value
+      tableValues = fixedColumns
+    }
+
+    if (tableValues) {
+      let value = [
+        ...tableValues,
+        ...[
+          testResult.status === "passed"
+            ? testResult.status
+            : testResult.status
+        ],
+        ...[error_log = testResult.message]
+      ]
+      dataToReport.push(value);
+    }
+  }
+
+  createReportWeb(UUID, index, jestOutput, dataToReport, columnNames)
+};
+
 /**
  * @description app entrypoint
  */
@@ -227,6 +313,7 @@ const main = () => {
             console.info(result.stderr.blue);
             if (columnNames.length > 0) {
               createTable(suiteIdentifier, index, varToEnv.TEST_UUID);
+              createReportHTML(suiteIdentifier, index, varToEnv.TEST_UUID);
             }
           })
           .catch((err) => {
@@ -235,6 +322,7 @@ const main = () => {
               console.info(err.stderr.red);
               if (columnNames.length > 0) {
                 createTable(suiteIdentifier, index, varToEnv.TEST_UUID);
+                createReportHTML(suiteIdentifier, index, varToEnv.TEST_UUID);
               }
             } else {
               console.error("error".red, err);
