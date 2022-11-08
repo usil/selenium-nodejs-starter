@@ -30,7 +30,12 @@ class CustomNodeEnvironment extends NodeEnvironment {
         if (event.name === "test_fn_failure") {
             this.global._testStatus = "failure"
             //take screenshot on error
-            takeScreenshot(this.global.driver, this.global._testPath, `${this.global._describeName} - ${this.global._testName}`);
+            takeScreenshot({
+                driver: this.global.driver,
+                filePath: this.global._testPath,
+                screenshotAlias: `${this.global._describeName} - ${this.global._testName}`,
+                error_screen: true
+            });
         } else if (event.name === "test_fn_success") {
             this.global._testStatus = "success"
         }

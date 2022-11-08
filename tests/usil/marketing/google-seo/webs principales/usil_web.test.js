@@ -29,7 +29,7 @@ describe(`Webs publicas deben de tener la url base esperada`, () => {
     var firstResult = await linksContainers[0].getText();
     var urlRegex = /(https?:\/\/[^ ]*)/;
     var url = firstResult.match(urlRegex)[1];
-    expect(url.split("\n")[0]).toBe("https://usil.edu.pe");
+    expect(url.split("\n")[0]).toBe("https://usil.edu.pee");
 
   });
 

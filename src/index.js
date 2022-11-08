@@ -7,7 +7,7 @@ const { v4 } = require("uuid")
 const { EnvSettings } = require("advanced-settings");
 const util = require("util");
 
-const { formatVarsEnv, sortTestResults, createReportWeb } = require("./helpers/testHelpers");
+const { formatVarsEnv, sortTestResults, createReportHTML } = require("./helpers/testHelpers");
 
 const exec = util.promisify(require("child_process").exec);
 
@@ -16,7 +16,6 @@ const envSettings = new EnvSettings();
 const testOptions = envSettings.loadJsonFileSync("testOptions.json", "utf8");
 const columnNames = testOptions.columnNames;
 const reportMode = testOptions.reportMode;
-const reportWeb = testOptions.reportWeb;
 
 /**
  *
@@ -160,94 +159,6 @@ const createTable = (suiteIdentifier, virtualUser, testUuid) => {
 };
 
 /**
- * 
- * @param {string | number} suiteIdentifier Test Suite Identifier
- * @param {number} virtualUser Test run number
- * @param {string} testUuid Running test identifier
- * @description
- * Adapt the test results to three columns and then call the function 
- * to create the web report
- */
-const createReportHTML = (suiteIdentifier, virtualUser, testUuid) => {
-  /**
-   * Verify that the report is generated in HTML
-   */
-  if (!reportWeb)
-    return;
-
-  const jestOutput = require(`../${suiteIdentifier}-jest-output.json`);
-  let testResults = sortTestResults(jestOutput.testResults);
-
-  const dataToReport = [];
-
-  for (const testResult of testResults) {
-    const path =
-      os.type() === "Windows_NT"
-        ? testResult.name.split("\\")
-        : testResult.name.split("/");
-
-    const testIndex = path.indexOf("tests");
-
-    if (testIndex === -1) {
-      console.log(
-        `${path[path.length - 1]} test is not inside the correct directory.`
-          .yellow
-      );
-      continue;
-    }
-
-    let tableValues = path.slice(testIndex + 1, path.length);
-
-    /**
-     * Adjust the columns for the web report
-     */
-    let fixedColumns = [];
-
-    /**
-     * The first is always used for column 'C1'
-     */
-    fixedColumns.push(tableValues.shift());
-
-    /**
-     * Iterate and concatenate the folder to fixed
-     */
-    let dynamicColumn = '';
-    for (let index = 0; index < tableValues.length - 1; index++) {
-      index === 0 ? false : dynamicColumn += '/';
-      dynamicColumn += `${tableValues[index]}`;
-    }
-
-    /**
-     * Add the fixed column 'C2'
-     */
-    fixedColumns.push(dynamicColumn);
-
-    /**
-     * Add the value of the last column 'C3'
-     */
-    fixedColumns.push(tableValues.pop().split('.test')[0]);
-
-    // Replace table value
-    tableValues = fixedColumns;
-
-    if (tableValues) {
-      let value = [
-        ...tableValues,
-        ...[
-          testResult.status === "passed"
-            ? testResult.status
-            : testResult.status
-        ],
-        ...[error_log = testResult.message]
-      ];
-      dataToReport.push(value);
-    }
-  }
-
-  createReportWeb(testUuid, virtualUser, jestOutput, dataToReport, columnNames);
-};
-
-/**
  * @description app entrypoint
  */
 const main = () => {
@@ -298,6 +209,7 @@ const main = () => {
          * Generate id for test
          */
         varToEnv.TEST_UUID = v4();
+        varToEnv.EXECUTION_SUITE = index;
 
         //* Spawns the jest process
         exec(
@@ -312,8 +224,8 @@ const main = () => {
             // Print the jest result
             console.info(result.stderr.blue);
             if (columnNames.length > 0) {
-              createTable(suiteIdentifier, index, varToEnv.TEST_UUID);
-              createReportHTML(suiteIdentifier, index, varToEnv.TEST_UUID);
+              createTable(suiteIdentifier, varToEnv.EXECUTION_SUITE, varToEnv.TEST_UUID);
+              createReportHTML(suiteIdentifier, varToEnv.EXECUTION_SUITE, testOptions, varToEnv.TEST_UUID);
             }
           })
           .catch((err) => {
@@ -322,7 +234,7 @@ const main = () => {
               console.info(err.stderr.red);
               if (columnNames.length > 0) {
                 createTable(suiteIdentifier, index, varToEnv.TEST_UUID);
-                createReportHTML(suiteIdentifier, index, varToEnv.TEST_UUID);
+                createReportHTML(suiteIdentifier, varToEnv.EXECUTION_SUITE, testOptions, varToEnv.TEST_UUID);
               }
             } else {
               console.error("error".red, err);

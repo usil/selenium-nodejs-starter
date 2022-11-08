@@ -127,8 +127,8 @@
 
     <h3 id="reportName">#report_name</h4>
 
-    <h4 style="text-align: center" id="date"></h4>
-    <h4 id="reportDuration">#report_duration</h4>
+      <h4 style="text-align: center" id="date"></h4>
+      <h4 id="reportDuration">#report_duration</h4>
   </div>
 
   <div class="chart-container">
@@ -161,7 +161,7 @@
       dataForReport.report_name = reportDataJSON.report_name;
       dataForReport.failed = reportDataJSON.numFailedTests;
       dataForReport.total = reportDataJSON.numTotalTests;
-      dataForReport.date = new Date().toLocaleString();
+      dataForReport.date = reportDataJSON.date;
       dataForReport.duration = reportDataJSON.duration;
 
       let reportRows = []
@@ -233,17 +233,18 @@
         cell4.innerHTML = scenarioStat.status;
 
         if (scenarioStat.status === 'passed') {
-          cell4.className = 'test-result-step-result-cell-ok'
+          cell4.className = 'test-result-step-result-cell-ok';
         } else {
-          row.className = 'clickable'
-          cell4.className = 'test-result-step-result-cell-failure'
-          var errorLogAsString;
+          row.className = 'clickable';
+          cell4.className = 'test-result-step-result-cell-failure';
+
+          let error_log;
           if (scenarioStat.errorLog) {
-            errorLogAsString = scenarioStat.errorLog;
+            error_log = scenarioStat.errorLog;
           } else {
-            errorLogAsString = "Error log was not found.";
+            error_log = "Error log was not found.";
           }
-          createErrorRow(table, `error_${i}`, errorLogAsString)
+          createErrorRow(table, `error_${i}`, error_log);
 
           row.onclick = function () {
             var rowId = this.id;
@@ -280,19 +281,44 @@
       });
     }
 
-    function createErrorRow(table, rowId, errorText) {
-      var errorRow = table.insertRow();
+    function createErrorRow(table, rowId, arrayError) {
+      let errorRow = table.insertRow();
       errorRow.id = rowId;
       errorRow.style = "display:none"
 
-      var errorCell = errorRow.insertCell();
+      let errorCell = errorRow.insertCell();
       errorCell.setAttribute("colspan", 5);
       errorCell.className = 'error'
 
-      var pre = document.createElement("pre");
-      pre.textContent = errorText;
+      let errors_container = document.createElement("div");
 
-      errorCell.appendChild(pre);
+      arrayError.map(el => {
+        let error_container = document.createElement("div");
+
+        let pre = document.createElement("pre");
+        pre.textContent = el.error_log;
+
+        let a = document.createElement("a")
+        a.href = el.screenshot;
+        a.innerHTML = 'Screenshot error';
+        a.target = '_blank'
+        a.style.color = '#FFF';
+
+        // let img = document.createElement("img");
+        // img.src = el.screenshot;
+        // img.alt = 'screenshot_error';
+
+        let hr = document.createElement("hr");
+
+        // a.appendChild(img)
+        error_container.appendChild(pre);
+        error_container.appendChild(a);
+        error_container.appendChild(hr)
+
+        errors_container.appendChild(error_container)
+      })
+
+      errorCell.appendChild(errors_container)
     }
 
 

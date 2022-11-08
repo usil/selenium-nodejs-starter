@@ -190,15 +190,21 @@ const sortTestResults = (results) => {
  * 
  * @param {object} driver Selenium driver
  * @param {string} filePath Path where the test is executed
+ * @param {string} screenshotAlias
+ * @param {string} error_screen
  * 
  * @description
  * Take a screenshot of the window that is being navigated with the driver, 
  * save this capture in screenshots grouped by the first column of the test
  */
-const takeScreenshot = async (driver, filePath, screenshotAlias) => {
-  const SPLIT_PATH = os.type() === "Windows_NT" ? "\\" : "/";
-  const DEFAULT_PATH = './screenshots';
+const takeScreenshot = async ({ driver, filePath, screenshotAlias, error_screen = false }) => {
+  const SPLIT_PATH = os.type() === 'Windows_NT' ? '\\' : '/';
   const TEST_UUID = getVariable('TEST_UUID');
+  const EXECUTION_SUITE = getVariable('EXECUTION_SUITE');
+  const DEFAULT_PATH =
+    error_screen
+      ? `.${SPLIT_PATH}report${SPLIT_PATH}${TEST_UUID}${SPLIT_PATH}${EXECUTION_SUITE}${SPLIT_PATH}screenshots`
+      : '.${SPLIT_PATH}screenshots';
 
   // Get the execution path of the test and add the folder for the test id
   let file_path = filePath.split(SPLIT_PATH);
@@ -213,17 +219,26 @@ const takeScreenshot = async (driver, filePath, screenshotAlias) => {
   /**
    * File name : create a sanitized file name from screenshot alias
    */
-  const file = `${getCleanedString(screenshotAlias)}.png`;
+  const file = `${getCleanedString(screenshotAlias)}.jpg`;
 
   // Verify that the default folder for screenshots exists
   if (!fs.existsSync(DEFAULT_PATH))
-    await fs.promises.mkdir(DEFAULT_PATH)
+    await fs.promises.mkdir(DEFAULT_PATH, { recursive: true })
 
   // Build the screenshot path
   let screenshot_test_path = '';
-  file_path.map(el => {
-    screenshot_test_path += `${SPLIT_PATH}${el}`
-  })
+  if (!error_screen) {
+    file_path.map((el) => {
+      screenshot_test_path += `${SPLIT_PATH}${el}`
+    })
+  } else {
+    file_path.map((el, index) => {
+      if (index > 0) {
+        screenshot_test_path += `${SPLIT_PATH}${el}`
+      }
+    })
+  }
+
 
   // Create the folders to save the screenshot
   await fs.promises.mkdir(path.join(DEFAULT_PATH, screenshot_test_path), { recursive: true })
@@ -245,16 +260,14 @@ const takeScreenshot = async (driver, filePath, screenshotAlias) => {
 
 /**
  * 
- * @param {string} testUuid Test identifier
+ * @param {string | number} suiteIdentifier Test Suite Identifier
  * @param {number} virtualUser Test run number
- * @param {object} reportDataJSON Data returned by the jest
- * @param {array} columnsName Column names
- * 
+ * @param {string} testUuid Running test identifier
  * @description
- * Generate the file in HTML, for the test results
+ * Adapt the test results to three columns and then call the function 
+ * to create the web report
  */
-const createReportWeb = async (testUuid, virtualUser, jestOutput, reportData, columnsName) => {
-
+const createReportHTML = async (suiteIdentifier, virtualUser, testOptions, testUuid) => {
   /**
    * @description
    * Receive the seconds and return in hh:mm:ss format
@@ -274,46 +287,164 @@ const createReportWeb = async (testUuid, virtualUser, jestOutput, reportData, co
     return hour + ':' + minute + ':' + second;
   }
 
-  let report_data_json = {};
+  const { reportWeb, columnNames } = testOptions;
+  const SPLIT_PATH = os.type() === "Windows_NT" ? "\\" : "/";
+  const report_data_json = {};
+  let test_exec_time = 0;
 
-  report_data_json.duration =
-    __secondsToDurationStr(
-      (jestOutput.testResults[0].endTime -
-        jestOutput.testResults[0].startTime) /
-      1000
-    );
+  /**
+   * Verify that the report is generated in HTML
+   */
+  if (!reportWeb)
+    return;
 
-  report_data_json.columnsData = reportData;
+  const jestOutput = require(`..${SPLIT_PATH}..${SPLIT_PATH}${suiteIdentifier}-jest-output.json`);
+  let testResults = sortTestResults(jestOutput.testResults);
+
+  const dataToReport = [];
+
+  /**
+   * Preparar los datos para el reporte web
+   */
+  for (const testResult of testResults) {
+    const path = testResult.name.split(SPLIT_PATH)
+
+    const testIndex = path.indexOf("tests");
+
+    if (testIndex === -1) {
+      console.log(
+        `${path[path.length - 1]} test is not inside the correct directory.`
+          .yellow
+      );
+      continue;
+    }
+
+    /**
+     * Acumular la duración de ejecución de los test
+     */
+    test_exec_time += (testResult.endTime - testResult.startTime)
+
+
+    let tableValues = path.slice(testIndex + 1, path.length);
+
+    /**
+     * Adjust the columns for the web report
+     */
+    let fixedColumns = [];
+
+    /**
+     * The first is always used for column 'C1'
+     */
+    fixedColumns.push(tableValues[0]);
+
+    /**
+     * Iterate and concatenate the folder to fixed
+     */
+    let dynamicColumn = '';
+    for (let index = 0; index < tableValues.length - 1; index++) {
+      index === 0 ? false : dynamicColumn += '/';
+      dynamicColumn += `${tableValues[index]}`;
+    }
+
+    /**
+     * Add the fixed column 'C2'
+     */
+    fixedColumns.push(dynamicColumn);
+
+    /**
+     * Add the value of the last column 'C3'
+     */
+    fixedColumns.push(tableValues[tableValues.length - 1].split('.test')[0]);
+
+    // Replace table value
+    // tableValues = fixedColumns;
+
+    if (fixedColumns) {
+      /**
+       * Construir el array para los errores
+       */
+      let error_log = [];
+      for (const assertionResult of testResult.assertionResults) {
+        const {
+          ancestorTitles,
+          failureMessages,
+          title
+        } = assertionResult;
+
+        let error_image_name = getCleanedString(`${ancestorTitles} - ${title}`)
+        let error_image_path = 'screenshots';
+        tableValues.map(el => {
+          error_image_path += `/${el}`;
+        })
+        error_image_path += `/${error_image_name}.jpg`
+
+        if (failureMessages.length > 0) {
+          error_log.push({
+            error_log: `${title}\n${failureMessages[0]}`,
+            screenshot: error_image_path.replaceAll(' ', '%20')
+          })
+        }
+      }
+
+      let value = [
+        ...fixedColumns,
+        ...[
+          testResult.status === "passed"
+            ? testResult.status
+            : testResult.status
+        ],
+        error_log
+      ];
+      dataToReport.push(value);
+    }
+  }
+
+  /**
+   * Crear el reporte web
+   */
+  report_data_json.duration = __secondsToDurationStr(test_exec_time / 1000)
+  report_data_json.columnsData = dataToReport;
 
   report_data_json.report_name = testUuid;
   report_data_json.passed = jestOutput.numPassedTests;
   report_data_json.failed = jestOutput.numFailedTests;
   report_data_json.total = jestOutput.numTotalTests;
+  report_data_json.date = new Date(jestOutput.startTime).toString()
 
   try {
-    const index = fs.readFileSync('./src/helpers/ReportTemplate/index.html', { encoding: 'utf8' });
+    const index =
+      fs.readFileSync(
+        `.${SPLIT_PATH}src${SPLIT_PATH}helpers${SPLIT_PATH}ReportTemplate${SPLIT_PATH}index.html`,
+        { encoding: 'utf8' }
+      );
 
     let result = index.replace(/#data_report/g, JSON.stringify(report_data_json));
-    result = result.replace(/#columns_name/g, JSON.stringify(columnsName));
+    result = result.replace(/#columns_name/g, JSON.stringify(columnNames));
     result = result.replace(/#report_duration/g, report_data_json.duration);
 
     // Verify that the default folder for report exists
-    if (!fs.existsSync("./report"))
-      await fs.promises.mkdir(`./report`);
+    if (!fs.existsSync(`.${SPLIT_PATH}report${SPLIT_PATH}${testUuid}${SPLIT_PATH}${virtualUser}${SPLIT_PATH}`)) {
+      await fs.promises.mkdir(
+        `.${SPLIT_PATH}report${SPLIT_PATH}${testUuid}${SPLIT_PATH}${virtualUser}${SPLIT_PATH}`,
+        { recursive: true }
+      );
+    }
 
-    if (!fs.existsSync(`./report/${testUuid}`))
-      await fs.promises.mkdir(`./report/${testUuid}/${virtualUser}/`, { recursive: true });
-
-    fs.writeFileSync(`./report/${testUuid}/${virtualUser}/index.html`, result, 'utf-8');
+    fs.writeFileSync(
+      `.${SPLIT_PATH}report${SPLIT_PATH}${testUuid}${SPLIT_PATH}${virtualUser}${SPLIT_PATH}index.html`,
+      result,
+      'utf-8'
+    );
   } catch (err) {
     console.log(err)
   }
-}
+};
 
 module.exports = {
+  getCleanedString,
   formatVarsEnv,
   getVariable,
   sortTestResults,
   takeScreenshot,
-  createReportWeb
+  createReportHTML
 }
