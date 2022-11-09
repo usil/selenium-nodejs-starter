@@ -22,9 +22,13 @@ This will give a your a report like this
 
 ![image](https://user-images.githubusercontent.com/3322836/200095302-3f7c81d9-239e-41c7-bfd9-36ccdb5203dd.png)
 
+Or a web report
+
+![image](https://user-images.githubusercontent.com/3322836/200892976-c2c0ad2c-a5a3-4c33-bb21-23de94e64316.png)
+
 Also you could simulate an error in some expect, run again and check the screenshots folder with the test uuid
 
-`screenshots/99ede1f9-f2ef-45e7-baad-403f1abf76c5/usil/foo/bar/baz.test.js/describe-name-test-name.png`
+`./report/99ede1f9-f2ef-45e7-baad-403f1abf76c5/screenshots/usil/foo/bar/baz.test.js/describe-name-test-name.png`
 
 ## Usage
 
@@ -60,7 +64,7 @@ Example of an empty `testOptions.json` file
 {
   "files": [],
   "virtualUserMultiplier": 1,
-  "reportWeb":true,
+  "reportWeb": false,
   "reportMode": "staticDeep",
   "columnNames": ["enterprise", "feature", "scenario"],
   "virtualUserSuites": [
@@ -69,7 +73,7 @@ Example of an empty `testOptions.json` file
       "identifier": "first-test",
       "files": [],
       "variables": {
-        "acmeBaseUrl": "https://acme.com"        
+        "acmeBaseUrl": "https://acme.com"
       }
     }
   ]
@@ -93,7 +97,7 @@ Example in `testOptions.json` file
       "identifier": "first-test",
       "files": [],
       "variables": {
-        "acmeBaseUrl": "https://acme.com"        
+        "acmeBaseUrl": "https://acme.com"
         "acmeApiKey": "${API_KEY}"
       }
     }
@@ -142,7 +146,7 @@ set FILTERED_FILES="test1.test.js test2.test.js"
 
 ### Custom columns
 
-By default this framework only prints 3 columns. If you need to have more columns visit [Settings Shell Report](https://github.com/usil/selenium-nodejs-starter/wiki/Settings---Shell--Report#how-to-use-reportmode) and use the **defaultMode** 
+By default this framework only prints 3 columns. If you need to have more columns visit [Settings Shell Report](https://github.com/usil/selenium-nodejs-starter/wiki/Settings---Shell--Report#how-to-use-reportmode) and use the **defaultMode**
 
 ## Contributors
 

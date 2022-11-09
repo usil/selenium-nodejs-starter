@@ -324,7 +324,6 @@ const createReportHTML = async (suiteIdentifier, virtualUser, testOptions, testU
      */
     test_exec_time += (testResult.endTime - testResult.startTime)
 
-
     let tableValues = path.slice(testIndex + 1, path.length);
 
     /**
@@ -356,14 +355,12 @@ const createReportHTML = async (suiteIdentifier, virtualUser, testOptions, testU
      */
     fixedColumns.push(tableValues[tableValues.length - 1].split('.test')[0]);
 
-    // Replace table value
-    // tableValues = fixedColumns;
-
     if (fixedColumns) {
       /**
-       * Construir el array para los errores
+       * Build the array for the errors
        */
       let error_log = [];
+
       for (const assertionResult of testResult.assertionResults) {
         const {
           ancestorTitles,
@@ -400,7 +397,7 @@ const createReportHTML = async (suiteIdentifier, virtualUser, testOptions, testU
   }
 
   /**
-   * Crear el reporte web
+   * Create the web report
    */
   report_data_json.duration = __secondsToDurationStr(test_exec_time / 1000)
   report_data_json.columnsData = dataToReport;
@@ -441,7 +438,6 @@ const createReportHTML = async (suiteIdentifier, virtualUser, testOptions, testU
 };
 
 module.exports = {
-  getCleanedString,
   formatVarsEnv,
   getVariable,
   sortTestResults,
