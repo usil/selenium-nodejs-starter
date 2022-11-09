@@ -1,6 +1,6 @@
 const seoHelpers = require("../../../../../src/helpers/seo.helpers");
 const getBrowserDriver = require("../../../../../src/browsers/browserDriver");
-const { getVarEnv, driverScreenshot } = require("../../../../../src/helpers/testHelpers");
+const { getVarEnv } = require("../../../../../src/helpers/testHelpers");
 const webdriver = require('selenium-webdriver');
 const By = webdriver.By;
 const Key = webdriver.Key;
@@ -11,13 +11,14 @@ describe(`Webs publicas deben de tener la url correcta`, () => {
 
   beforeAll(async () => {
     driver = await getBrowserDriver();
+    global.driver = driver;
   });
 
   beforeEach(async () => {
     await driver.get("http://www.google.com");
   });
   
-  it(`f3df52d3f598 coloring dreams debe tener la url esperada`, async () => {
+  it(`f3df52d3f59 coloring dreams debe tener la url esperada`, async () => {
     var searchBox = driver.findElement(By.name('q'));
     await searchBox.sendKeys('coloring dream', Key.RETURN);
 

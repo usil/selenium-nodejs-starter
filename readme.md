@@ -22,9 +22,13 @@ This will give a your a report like this
 
 ![image](https://user-images.githubusercontent.com/3322836/200095302-3f7c81d9-239e-41c7-bfd9-36ccdb5203dd.png)
 
+Or a web report
+
+![image](https://user-images.githubusercontent.com/3322836/200892976-c2c0ad2c-a5a3-4c33-bb21-23de94e64316.png)
+
 Also you could simulate an error in some expect, run again and check the screenshots folder with the test uuid
 
-`screenshots/99ede1f9-f2ef-45e7-baad-403f1abf76c5/usil/foo/bar/baz.test.js/describe-name-test-name.png`
+`./report/99ede1f9-f2ef-45e7-baad-403f1abf76c5/screenshots/usil/foo/bar/baz.test.js/describe-name-test-name.png`
 
 ## Usage
 
@@ -39,6 +43,7 @@ You will have a `testOptions.json` file in the root of this project, you should 
 | name                  | Description                                                                                                                                         | Default Value          | Required |
 | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- | -------- |
 | files                 | The files or directory that you want to test, setting it to an empty array will test all files                                                      | []                     | false    |
+| reportWeb             | Generate report on Web(HTML)                                                                                                                        | false                  | true     |
 | reportMode            | Change the type of report keeping its default structure or adjusting the report columns                                                             | staticDeep             | true     |
 | columnNames           | The name of the columns that will be related to the directory structure                                                                             | []                     | true     |
 | virtualUserSuites     | The number of whole test suites you want to simulate and its specific configurations and variables, each test virtual user suite represents 1 user. | virtualUserSuite array | true     |
@@ -59,6 +64,7 @@ Example of an empty `testOptions.json` file
 {
   "files": [],
   "virtualUserMultiplier": 1,
+  "reportWeb": false,
   "reportMode": "staticDeep",
   "columnNames": ["enterprise", "feature", "scenario"],
   "virtualUserSuites": [
@@ -67,7 +73,7 @@ Example of an empty `testOptions.json` file
       "identifier": "first-test",
       "files": [],
       "variables": {
-        "acmeBaseUrl": "https://acme.com"        
+        "acmeBaseUrl": "https://acme.com"
       }
     }
   ]
@@ -82,6 +88,7 @@ Example in `testOptions.json` file
 {
   "files": [],
   "virtualUserMultiplier": 1,
+  "reportWeb":true,
   "reportMode": "staticDeep",
   "columnNames": ["enterprise", "feature", "scenario"],
   "virtualUserSuites": [
@@ -90,7 +97,7 @@ Example in `testOptions.json` file
       "identifier": "first-test",
       "files": [],
       "variables": {
-        "acmeBaseUrl": "https://acme.com"        
+        "acmeBaseUrl": "https://acme.com"
         "acmeApiKey": "${API_KEY}"
       }
     }
@@ -139,7 +146,7 @@ set FILTERED_FILES="test1.test.js test2.test.js"
 
 ### Custom columns
 
-By default this framework only prints 3 columns. If you need to have more columns visit [Settings Shell Report](https://github.com/usil/selenium-nodejs-starter/wiki/Settings---Shell--Report#how-to-use-reportmode) and use the **defaultMode** 
+By default this framework only prints 3 columns. If you need to have more columns visit [Settings Shell Report](https://github.com/usil/selenium-nodejs-starter/wiki/Settings---Shell--Report#how-to-use-reportmode) and use the **defaultMode**
 
 ## Contributors
 

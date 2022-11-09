@@ -1,6 +1,7 @@
 {
   "files": [],
   "virtualUserMultiplier": 1,
+  "reportWeb": false,
   "reportMode": "dynamicDeep",
   "columnNames": [
     "enterprise",

@@ -4,12 +4,10 @@ require("dotenv").config();
 const Table = require("cli-table");
 const os = require("os");
 const { v4 } = require("uuid")
-
 const { EnvSettings } = require("advanced-settings");
-
 const util = require("util");
 
-const { formatVarsEnv, sortTestResults } = require("./helpers/testHelpers");
+const { formatVarsEnv, sortTestResults, createReportHTML } = require("./helpers/testHelpers");
 
 const exec = util.promisify(require("child_process").exec);
 
@@ -21,9 +19,9 @@ const reportMode = testOptions.reportMode;
 
 /**
  *
- * @param {string | number} suiteIdentifier
- * @param {string} stderr
- * @param {number} virtualUser
+ * @param {string | number} suiteIdentifier Test Suite Identifier
+ * @param {number} virtualUser Test run number
+ * @param {string} testUuid Running test identifier
  * @description Print the report table
  */
 const createTable = (suiteIdentifier, virtualUser, testUuid) => {
@@ -164,7 +162,6 @@ const createTable = (suiteIdentifier, virtualUser, testUuid) => {
  * @description app entrypoint
  */
 const main = () => {
-  let suiteIndex = 0;
 
   for (
     let index = 0;
@@ -175,7 +172,7 @@ const main = () => {
       if (!suite.skip) {
         const suiteIdentifier = suite.identifier
           ? suite.identifier
-          : suiteIndex;
+          : index;
 
         console.info(
           `#${index} Starting test in ${suiteIdentifier} suite`.bgMagenta
@@ -212,6 +209,7 @@ const main = () => {
          * Generate id for test
          */
         varToEnv.TEST_UUID = v4();
+        varToEnv.EXECUTION_SUITE = index;
 
         //* Spawns the jest process
         exec(
@@ -226,7 +224,8 @@ const main = () => {
             // Print the jest result
             console.info(result.stderr.blue);
             if (columnNames.length > 0) {
-              createTable(suiteIdentifier, index, varToEnv.TEST_UUID);
+              createTable(suiteIdentifier, varToEnv.EXECUTION_SUITE, varToEnv.TEST_UUID);
+              createReportHTML(suiteIdentifier, varToEnv.EXECUTION_SUITE, testOptions, varToEnv.TEST_UUID);
             }
           })
           .catch((err) => {
@@ -235,13 +234,13 @@ const main = () => {
               console.info(err.stderr.red);
               if (columnNames.length > 0) {
                 createTable(suiteIdentifier, index, varToEnv.TEST_UUID);
+                createReportHTML(suiteIdentifier, varToEnv.EXECUTION_SUITE, testOptions, varToEnv.TEST_UUID);
               }
             } else {
               console.error("error".red, err);
             }
           });
       }
-      suiteIndex++;
     }
   }
 };
